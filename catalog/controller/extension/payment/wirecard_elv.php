@@ -36,12 +36,10 @@
 
 // Load main controller
 $dir = dirname(__FILE__);
-require_once ($dir . '/wirecard.php');
+require_once($dir . '/wirecard.php');
 
-class ControllerExtensionPaymentWirecardElv extends ControllerExtensionPaymentWirecard {
-
-	public $payment_type_prefix = '_elv';
-	public $payment_type = WirecardCEE_QPay_PaymentType::ELV;
-
+class ControllerExtensionPaymentWirecardElv extends ControllerExtensionPaymentWirecard
+{
+    public $payment_type_prefix = '_elv';
+    public $payment_type = WirecardCEE_QPay_PaymentType::ELV;
 }
-

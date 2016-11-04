@@ -39,7 +39,8 @@ ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . DIR_SYSTEM . 
 require_once 'Zend/Loader/Autoloader.php';
 Zend_Loader_Autoloader::getInstance()->registerNamespace("WirecardCEE");
 
-class ControllerExtensionPaymentWirecard extends Controller {
+class ControllerExtensionPaymentWirecard extends Controller
+{
     protected $data = array();
 
     private $pluginVersion = '1.3.0';
@@ -48,8 +49,13 @@ class ControllerExtensionPaymentWirecard extends Controller {
 
     const INVOICE_INSTALLMENT_MIN_AGE = 18;
 
-	public function index() {
-
+    /**
+     * @return mixed
+     *
+     * provided opencart function
+     */
+    public function index()
+    {
         // set Prefix
         $prefix = $this->prefix . $this->payment_type_prefix;
 
@@ -94,8 +100,11 @@ class ControllerExtensionPaymentWirecard extends Controller {
         }
 
         return $this->load->view($this->template, $data);
-	}
+    }
 
+    /**
+     * payment initialization
+     */
     public function init()
     {
         /*if (!isset($_POST['wirecard_checkout_page_window_name']) || !isset($_SESSION['order_id'])) {
@@ -147,14 +156,13 @@ class ControllerExtensionPaymentWirecard extends Controller {
         $data['button_confirm'] = $this->language->get('button_confirm');
         $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 
-        $pluginVersion = WirecardCEE_QPay_FrontendClient::generatePluginVersion($order_info['store_name'], VERSION, 'Opencart Wirecard Checkout Page', $this->pluginVersion);
-
-        //set error_init here
-        //$data['error_init'] = $this->language->get('error_init');
+        $pluginVersion = WirecardCEE_QPay_FrontendClient::generatePluginVersion($order_info['store_name'], VERSION,
+            'Opencart Wirecard Checkout Page', $this->pluginVersion);
 
         // set fields, optional, comsumer, generate fingerprint, send request, redirect
         // user
-        $result = $this->model_extension_payment_wirecard->send_request($prefix, $paymentType, $order_info, $birthday, $pluginVersion);
+        $result = $this->model_extension_payment_wirecard->send_request($prefix, $paymentType, $order_info, $birthday,
+            $pluginVersion);
 
         // If connection to wirecard success set template
         if ($result) {
@@ -164,12 +172,9 @@ class ControllerExtensionPaymentWirecard extends Controller {
             if ($this->config->get($prefix . '_iframe') == '1') {
                 $template = 'wirecard_iframe';
             } else {
-                //// $template = 'wirecard';
                 $this->response->redirect($data['action']);
             }
         } else {
-            //template does not load
-            $template = 'wirecard_error';
             $this->session->data['error'] = $this->language->get('error_init');
             $this->response->redirect($this->url->link('checkout/checkout', '', true));
         }
@@ -188,10 +193,14 @@ class ControllerExtensionPaymentWirecard extends Controller {
         $data['content_bottom'] = $this->load->controller('common/content_bottom');
         $data['footer'] = $this->load->controller('common/footer');
 
-
         $this->response->setOutput($this->load->view($this->template, $data, $this->children));
     }
 
+    /**
+     * @return string
+     *
+     * handles confirmURL
+     */
     public function callback()
     {
         // Prefix
@@ -204,7 +213,7 @@ class ControllerExtensionPaymentWirecard extends Controller {
         $this->model_extension_payment_wirecard->write_log('confirm_request:' . print_r($_REQUEST, true));
 
         $message = null;
-        if (! isset($_REQUEST['opencartOrderId']) || ! strlen($_REQUEST['opencartOrderId'])) {
+        if (!isset($_REQUEST['opencartOrderId']) || !strlen($_REQUEST['opencartOrderId'])) {
             $message = 'order-id missing';
             $this->model_extension_payment_wirecard->write_log($message);
             return WirecardCEE_QPay_ReturnFactory::generateConfirmResponseString($message);
@@ -223,9 +232,8 @@ class ControllerExtensionPaymentWirecard extends Controller {
                 continue;
             }
 
-            // TODO
-            if(is_array($v)) {
-                $comment .= "$k:". print_r($v) . "\n";
+            if (is_array($v)) {
+                $comment .= "$k:" . print_r($v) . "\n";
             } else {
                 $comment .= "$k:$v\n";
             }
@@ -240,19 +248,16 @@ class ControllerExtensionPaymentWirecard extends Controller {
         $message = null;
         try {
             $return = WirecardCEE_QPay_ReturnFactory::getInstance($_POST, $this->config->get($prefix . '_secret'));
-            if (! $return->validate()) {
+            if (!$return->validate()) {
                 $message = 'Validation error: invalid response';
                 $this->model_checkout_order->addOrderHistory($order_id, $failureStatus);
                 $this->model_checkout_order->write_log($message);
                 return WirecardCEE_QPay_ReturnFactory::generateConfirmResponseString($message);
             }
 
-
             /**
-             *
              * @var $return WirecardCEE_Stdlib_Return_ReturnAbstract
              */
-
             switch ($return->getPaymentState()) {
                 case WirecardCEE_QPay_ReturnFactory::STATE_SUCCESS:
                     // for pending requests, confirm is already done, the model does only one
@@ -264,22 +269,17 @@ class ControllerExtensionPaymentWirecard extends Controller {
                         $this->model_checkout_order->addOrderHistory($order_id, $successStatus, $comment, true);
                     }
                     break;
-
                 case WirecardCEE_QPay_ReturnFactory::STATE_PENDING:
                     /**
-                     *
                      * @var $return WirecardCEE_QPay_Return_Pending
                      */
                     $this->model_checkout_order->addOrderHistory($order_id, $pendingStatus, $comment, true);
                     break;
-
                 // we can do nothing here, confirm() always sends the notification email
                 // the update() method doese nothing if the order has not been confirmed yet
                 // see catalog/model/checkout/order.php
-
                 case WirecardCEE_QPay_ReturnFactory::STATE_CANCEL:
                     /**
-                     *
                      * @var $return WirecardCEE_QPay_Return_Cancel
                      */
                     // $this->model_checkout_order->addOrderHistory($order_id, $cancelStatus);
@@ -289,13 +289,11 @@ class ControllerExtensionPaymentWirecard extends Controller {
 
                 case WirecardCEE_QPay_ReturnFactory::STATE_FAILURE:
                     /**
-                     *
                      * @var $return WirecardCEE_QPay_Return_Failure
                      */
                     // $this->model_checkout_order->addOrderHistory($order_id, $failureStatus, '',
                     // false);
                     //$this->model_checkout_order->update($order_id, $failureStatus, $return->getErrors()->getConsumerMessage(), false);
-
                     //$this->model_extension_payment_wirecard->write_log($e->getMessage());
                     $this->session->data['error'] = $return->getError()->getMessage();
                     break;
@@ -307,32 +305,30 @@ class ControllerExtensionPaymentWirecard extends Controller {
             $this->model_checkout_order->addOrderHistory($order_id, $failureStatus);
             $this->model_extension_payment_wirecard->write_log($e->getMessage());
         }
-
         echo WirecardCEE_QPay_ReturnFactory::generateConfirmResponseString($message);
     }
 
+    /**
+     * redirection of successfull payment
+     */
     public function success()
     {
         $this->response->redirect($this->url->link('checkout/success', '', true));
-        // if success redirect
-        //echo '<script type="text/javascript"> parent.location ="' . $this->url->link('checkout/success') . '"</script>';
-        //echo '<noscript>Javascript muss aktiviert sein</noscript>';
     }
 
+    /**
+     * redirection of canceled or not finished payment
+     */
     public function checkout()
     {
         $this->response->redirect($this->url->link('checkout/checkout', '', true));
-        // if fail redirect
-        //echo '<script type="text/javascript"> parent.location ="' . $this->url->link('checkout/checkout') . '"</script>';
-        //echo 'Javascript muss aktiviert sein';
     }
 
+    /**
+     * redirection of failed payment
+     */
     public function failure()
     {
         $this->response->redirect($this->url->link('checkout/failure', '', true));
-        // if fail redirect
-        //echo '<script type="text/javascript"> parent.location ="' . $this->url->link('checkout/checkout') . '"</script>';
-        //echo 'Javascript muss aktiviert sein';
     }
-
 }

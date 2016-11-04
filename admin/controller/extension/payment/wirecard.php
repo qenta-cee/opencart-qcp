@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Shop System Plugins - Terms of Use
  *
@@ -33,12 +34,11 @@
  * terms of use. Please do not use the plugin if you do not agree to these
  * terms of use!
  */
-
 class ControllerExtensionPaymentWirecard extends Controller
 {
     private $error = array();
 
-    // define prefix
+    // define plugin prefix
     protected $prefix = 'wirecard';
 
     // define input fields
@@ -71,6 +71,9 @@ class ControllerExtensionPaymentWirecard extends Controller
         'serviceUrl' => false
     );
 
+    /**
+     * provided opencart function
+     */
     public function index()
     {
         $this->load->model('setting/setting');
@@ -86,8 +89,9 @@ class ControllerExtensionPaymentWirecard extends Controller
         // Prefix
         $data['prefix'] = $this->prefix . $this->payment_type . '_';
 
+        //save pluginsettings
         if ($this->request->server['REQUEST_METHOD'] == 'POST') {
-            if ($this->validate($this->payment_type)) {
+            if ($this->validate()) {
                 $this->model_setting_setting->editSetting($this->prefix . $this->payment_type, $this->request->post);
 
                 $this->session->data['success'] = $this->language->get('text_success');
@@ -166,7 +170,8 @@ class ControllerExtensionPaymentWirecard extends Controller
             'href' => $this->url->link('extension/payment/wirecard', 'token=' . $this->session->data['token'], true)
         );
 
-        $data['action'] = $this->url->link('extension/payment/' . $this->prefix . $this->payment_type, 'token=' . $this->session->data['token'],
+        $data['action'] = $this->url->link('extension/payment/' . $this->prefix . $this->payment_type,
+            'token=' . $this->session->data['token'],
             true);
 
         $data['cancel'] = $this->url->link('extension/extension',
@@ -180,7 +185,12 @@ class ControllerExtensionPaymentWirecard extends Controller
         $this->response->setOutput($this->load->view('extension/payment/wirecard', $data));
     }
 
-    protected function validate($payment)
+    /**
+     * @return bool
+     *
+     * validate required fields of form data
+     */
+    protected function validate()
     {
         if (!$this->user->hasPermission('modify', 'extension/payment/wirecard')) {
             $this->error['warning'] = $this->language->get('error_permission');
@@ -203,13 +213,4 @@ class ControllerExtensionPaymentWirecard extends Controller
         return true;
     }
 
-    //not used yet
-    protected function save()
-    {
-        // Save Post data
-        $this->model_setting_setting->editSetting($this->prefix . $this->payment_type, $this->request->post);
-        $this->session->data['success'] = $this->language->get('text_success');
-        $this->response->redirect($this->url->link('extension/payment', 'token=' . $this->session->data['token'],
-            'SSL'));
-    }
 }

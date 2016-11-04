@@ -36,12 +36,10 @@
 
 // Load main controller
 $dir = dirname(__FILE__);
-require_once ($dir . '/wirecard.php');
+require_once($dir . '/wirecard.php');
 
-class ControllerExtensionPaymentWirecardPsc extends ControllerExtensionPaymentWirecard {
-
-	public $payment_type_prefix = '_psc';
-	public $payment_type = WirecardCEE_QPay_PaymentType::PSC;
-
+class ControllerExtensionPaymentWirecardPsc extends ControllerExtensionPaymentWirecard
+{
+    public $payment_type_prefix = '_psc';
+    public $payment_type = WirecardCEE_QPay_PaymentType::PSC;
 }
-

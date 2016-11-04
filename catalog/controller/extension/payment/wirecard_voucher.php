@@ -36,11 +36,10 @@
 
 // Load main controller
 $dir = dirname(__FILE__);
-require_once ($dir . '/wirecard.php');
+require_once($dir . '/wirecard.php');
 
-class ControllerExtensionPaymentWirecardVoucher extends ControllerExtensionPaymentWirecard {
-
+class ControllerExtensionPaymentWirecardVoucher extends ControllerExtensionPaymentWirecard
+{
     public $payment_type_prefix = '_voucher';
     public $payment_type = WirecardCEE_QPay_PaymentType::VOUCHER;
-
 }

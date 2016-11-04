@@ -40,10 +40,15 @@ require_once($dir . '/wirecard.php');
 
 class ModelExtensionPaymentWirecardInvoice extends ModelExtensionPaymentWirecard
 {
-
     public $payment_type = '_invoice';
 
-    // get payment method
+    /**
+     * @param $address
+     * @param $total
+     * @return array|bool
+     *
+     * get payment method
+     */
     public function getMethod($address, $total)
     {
         if ($this->cart->hasShipping()) {
@@ -67,25 +72,23 @@ class ModelExtensionPaymentWirecardInvoice extends ModelExtensionPaymentWirecard
                     return false;
                 }
             }
-
         }
 
         $total = $this->currency->format($total, '', '', false);
-        if ($this->currency->getCode() != 'EUR')
+        if ($this->currency->getCode() != 'EUR') {
             return false;
+        }
 
-        $fieldValue  = $this->config->get($this->prefix . $this->payment_type . '_minAmount');
+        $fieldValue = $this->config->get($this->prefix . $this->payment_type . '_minAmount');
         if (!empty($fieldValue) and $total < $fieldValue) {
             return false;
         }
 
-        $fieldValue  = $this->config->get($this->prefix . $this->payment_type . '_maxAmount');
+        $fieldValue = $this->config->get($this->prefix . $this->payment_type . '_maxAmount');
         if (!empty($fieldValue) and $total > $fieldValue) {
             return false;
         }
 
         return parent::getMethod($address, $total);
     }
-
-
 }

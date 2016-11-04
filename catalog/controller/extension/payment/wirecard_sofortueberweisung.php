@@ -36,12 +36,10 @@
 
 // Load main controller
 $dir = dirname(__FILE__);
-require_once ($dir . '/wirecard.php');
+require_once($dir . '/wirecard.php');
 
-class ControllerExtensionPaymentWirecardSofortueberweisung extends ControllerExtensionPaymentWirecard {
-
-	public $payment_type_prefix = '_sofortueberweisung';
-	public $payment_type = WirecardCEE_QPay_PaymentType::SOFORTUEBERWEISUNG;
-
+class ControllerExtensionPaymentWirecardSofortueberweisung extends ControllerExtensionPaymentWirecard
+{
+    public $payment_type_prefix = '_sofortueberweisung';
+    public $payment_type = WirecardCEE_QPay_PaymentType::SOFORTUEBERWEISUNG;
 }
-

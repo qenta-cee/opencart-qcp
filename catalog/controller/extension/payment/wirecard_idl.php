@@ -36,11 +36,10 @@
 
 // Load main controller
 $dir = dirname(__FILE__);
-require_once ($dir . '/wirecard.php');
+require_once($dir . '/wirecard.php');
 
-class ControllerExtensionPaymentWirecardIdl extends ControllerExtensionPaymentWirecard {
-
-	public $payment_type_prefix = '_idl';
-	public $payment_type = WirecardCEE_QPay_PaymentType::IDL;
-
+class ControllerExtensionPaymentWirecardIdl extends ControllerExtensionPaymentWirecard
+{
+    public $payment_type_prefix = '_idl';
+    public $payment_type = WirecardCEE_QPay_PaymentType::IDL;
 }

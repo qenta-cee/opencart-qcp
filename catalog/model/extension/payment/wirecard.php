@@ -58,6 +58,11 @@ class ModelExtensionPaymentWirecard extends Model
 
     const WINDOW_NAME = 'WirecardCheckoutPageFrame';
 
+    /**
+     * @param $address
+     * @param $total
+     * @return array
+     */
     public function getMethod($address, $total)
     {
         $prefix = $this->prefix . $this->payment_type;
@@ -127,7 +132,12 @@ class ModelExtensionPaymentWirecard extends Model
         return $data;
     }
 
-    // set consumer data
+    /**
+     * @param $order
+     * @param WirecardCEE_Stdlib_ConsumerData $consumer_data
+     *
+     * set consumerdata
+     */
     public function set_consumer_information($order, WirecardCEE_Stdlib_ConsumerData $consumer_data)
     {
 
@@ -189,6 +199,17 @@ class ModelExtensionPaymentWirecard extends Model
             ->addAddressInformation($shippingAddress);
     }
 
+    /**
+     * @param $prefix
+     * @param $paymentType
+     * @param $order
+     * @param $birthday
+     * @param $plugin_version
+     * @return bool|string
+     * @throws Exception
+     *
+     * send payment request
+     */
     public function send_request($prefix, $paymentType, $order, $birthday, $plugin_version)
     {
         $fields = $this->get_config($prefix);
@@ -263,6 +284,11 @@ class ModelExtensionPaymentWirecard extends Model
         return $response->getRedirectUrl();
     }
 
+    /**
+     * @param $message
+     *
+     * write to logfile
+     */
     public function write_log($message)
     {
         $date = date("Y-m-d");
@@ -273,21 +299,35 @@ class ModelExtensionPaymentWirecard extends Model
         fclose($handle);
     }
 
+    /**
+     * @return string
+     */
     public function get_window_name()
     {
         return self::WINDOW_NAME;
     }
 
+    /**
+     * @param $order
+     * @return string
+     */
     protected function get_order_description($order)
     {
         return sprintf('user_id:%s order_id:%s', $order['customer_id'], $order['order_id']);
     }
 
+    /**
+     * @param $order
+     * @return string
+     */
     protected function get_customer_statement($order)
     {
         return sprintf('%s #%06s', $order['store_name'], $order['order_id']);
     }
 
+    /**
+     * @return string
+     */
     protected function get_customer_layout()
     {
         $objMobileDetect = new WirecardCEE_Stdlib_Mobiledetect();

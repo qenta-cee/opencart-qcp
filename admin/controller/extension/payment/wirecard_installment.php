@@ -68,6 +68,11 @@ class ControllerExtensionPaymentWirecardInstallment extends ControllerExtensionP
         'consumerInformation' => 'true_false'
     );
 
+    /**
+     * @return bool
+     *
+     * validate form data and amount
+     */
     protected function validate()
     {
         $boolHasValidationError = parent::validate();

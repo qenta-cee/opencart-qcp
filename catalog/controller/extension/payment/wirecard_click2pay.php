@@ -36,15 +36,14 @@
 
 // Load main controller
 $dir = dirname(__FILE__);
-require_once ($dir . '/wirecard.php');
+require_once($dir . '/wirecard.php');
 
-class ControllerExtensionPaymentWirecardClick2Pay extends ControllerExtensionPaymentWirecard {
+class ControllerExtensionPaymentWirecardClick2Pay extends ControllerExtensionPaymentWirecard
+{
+    private $error = array();
 
-	private $error = array();
+    // define payment type
+    public $payment_type_prefix = '_click2pay';
 
-	// define payment type
-	public $payment_type_prefix = '_click2pay';
-
-	public $payment_type = WirecardCEE_QPay_PaymentType::C2P;
-
+    public $payment_type = WirecardCEE_QPay_PaymentType::C2P;
 }

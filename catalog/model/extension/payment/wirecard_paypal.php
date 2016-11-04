@@ -36,11 +36,9 @@
 
 // Load main controller
 $dir = dirname(__FILE__);
-require_once ($dir . '/wirecard.php');
+require_once($dir . '/wirecard.php');
 
-class ModelExtensionPaymentWirecardPaypal extends ModelExtensionPaymentWirecard {
-
-	public $payment_type = '_paypal';
-
+class ModelExtensionPaymentWirecardPaypal extends ModelExtensionPaymentWirecard
+{
+    public $payment_type = '_paypal';
 }
-
