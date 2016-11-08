@@ -107,28 +107,25 @@ class ControllerExtensionPaymentWirecard extends Controller
      */
     public function init()
     {
-        /*if (!isset($_POST['wirecard_checkout_page_window_name']) || !isset($_SESSION['order_id'])) {
-            $this->response->redirect($this->url->link('checkout/checkout', '', true));
-        }*/
         if (isset($_POST['wirecard_checkout_page_window_name'])) {
             $data['window_name'] = $_POST['wirecard_checkout_page_window_name'];
         }
 
         if (($this->payment_type == WirecardCEE_QPay_PaymentType::INSTALLMENT || $this->payment_type == WirecardCEE_QPay_PaymentType::INVOICE) && !isset($_POST['birthday'])) {
-            $this->response->redirect($this->url->link('checkout/checkout', '', true));
+            $this->checkout();
         }
 
         $birthday = null;
         if ($this->payment_type == WirecardCEE_QPay_PaymentType::INSTALLMENT || $this->payment_type == WirecardCEE_QPay_PaymentType::INVOICE) {
             $birthday = date_create($_POST['birthday']);
             if (!$birthday) {
-                $this->response->redirect($this->url->link('checkout/checkout', '', true));
+                $this->checkout();
             }
 
             $diff = $birthday->diff(new DateTime());
             $customerAge = $diff->format('%y');
             if ($customerAge < self::INVOICE_INSTALLMENT_MIN_AGE) {
-                $this->response->redirect($this->url->link('checkout/checkout', '', true));
+                $this->checkout();
             }
         }
 
@@ -176,7 +173,7 @@ class ControllerExtensionPaymentWirecard extends Controller
             }
         } else {
             $this->session->data['error'] = $this->language->get('error_init');
-            $this->response->redirect($this->url->link('checkout/checkout', '', true));
+            $this->checkout();
         }
 
         // Template Output
@@ -282,20 +279,12 @@ class ControllerExtensionPaymentWirecard extends Controller
                     /**
                      * @var $return WirecardCEE_QPay_Return_Cancel
                      */
-                    // $this->model_checkout_order->addOrderHistory($order_id, $cancelStatus);
-                    // $this->model_checkout_order->update($order_id, $cancelStatus, $comment,
-                    // false);
                     break;
 
                 case WirecardCEE_QPay_ReturnFactory::STATE_FAILURE:
                     /**
                      * @var $return WirecardCEE_QPay_Return_Failure
                      */
-                    // $this->model_checkout_order->addOrderHistory($order_id, $failureStatus, '',
-                    // false);
-                    //$this->model_checkout_order->update($order_id, $failureStatus, $return->getErrors()->getConsumerMessage(), false);
-                    //$this->model_extension_payment_wirecard->write_log($e->getMessage());
-                    $this->session->data['error'] = $return->getError()->getMessage();
                     break;
 
                 default:
@@ -313,7 +302,8 @@ class ControllerExtensionPaymentWirecard extends Controller
      */
     public function success()
     {
-        $this->response->redirect($this->url->link('checkout/success', '', true));
+        echo '<script type="text/javascript"> parent.location ="' . $this->url->link('checkout/success') . '"</script>';
+        echo '<noscript>Javascript muss aktiviert sein</noscript>';
     }
 
     /**
@@ -321,7 +311,8 @@ class ControllerExtensionPaymentWirecard extends Controller
      */
     public function checkout()
     {
-        $this->response->redirect($this->url->link('checkout/checkout', '', true));
+        echo '<script type="text/javascript"> parent.location ="' . $this->url->link('checkout/checkout') . '"</script>';
+        echo '<noscript>Javascript muss aktiviert sein</noscript>';
     }
 
     /**
@@ -329,6 +320,7 @@ class ControllerExtensionPaymentWirecard extends Controller
      */
     public function failure()
     {
-        $this->response->redirect($this->url->link('checkout/failure', '', true));
+        echo '<script type="text/javascript"> parent.location ="' . $this->url->link('checkout/failure') . '"</script>';
+        echo '<noscript>Javascript muss aktiviert sein</noscript>';
     }
 }
