@@ -214,14 +214,18 @@ class ModelExtensionPaymentWirecard extends Model
     {
         $fields = $this->get_config($prefix);
         try {
+            $language_info = $order['language_code'];
             //languagecode is like 'en-gb' but should be 'en'
-            $language_info = explode('-', $order['language_code']);
+            if (strpos($language_info, '-') !== false) {
+                $language_info = explode('-', $language_info);
+                $language_info = $language_info[0];
+            }
 
             $client = new WirecardCEE_QPay_FrontendClient(array(
                 'CUSTOMER_ID' => $fields['customerId'],
                 'SHOP_ID' => $fields['shopId'],
                 'SECRET' => $fields['secret'],
-                'LANGUAGE' => $language_info[0]
+                'LANGUAGE' => $language_info
             ));
 
             // consumer data (IP and User agent) are mandatory!
@@ -259,6 +263,7 @@ class ModelExtensionPaymentWirecard extends Model
                 ->setServiceUrl($fields['serviceUrl'])
                 ->setImageUrl($fields['imageURL'])
                 ->setConsumerData($consumerData)
+                ->createConsumerMerchantCrmId($order['email'])
                 ->setDisplayText($fields['displayText'])
                 ->setCustomerStatement($this->get_customer_statement($order))
                 ->setDuplicateRequestCheck(false)
