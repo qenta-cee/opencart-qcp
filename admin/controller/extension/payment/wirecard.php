@@ -192,7 +192,7 @@ class ControllerExtensionPaymentWirecard extends Controller
      */
     protected function validate()
     {
-        if (!$this->user->hasPermission('modify', 'extension/payment/wirecard')) {
+        if (!$this->user->hasPermission('modify', 'extension/payment/'. $this->prefix . $this->payment_type)) {
             $this->error['warning'] = $this->language->get('error_permission');
             return false;
         }
