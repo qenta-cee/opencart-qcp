@@ -43,7 +43,7 @@ class ControllerExtensionPaymentWirecard extends Controller
 {
     protected $data = array();
 
-    private $pluginVersion = '1.4.0';
+    private $pluginVersion = '1.4.1';
 
     private $prefix = 'wirecard';
 
@@ -74,6 +74,7 @@ class ControllerExtensionPaymentWirecard extends Controller
         $data['window_name'] = $this->model_extension_payment_wirecard->get_window_name();
 
         // Set Template
+	    $template = 'wirecard_init';
         if ($this->payment_type == WirecardCEE_QPay_PaymentType::INSTALLMENT) {
             $template = 'wirecard_installment';
             $data['txt_info'] = $this->language->get('text_installment_info');
@@ -82,8 +83,6 @@ class ControllerExtensionPaymentWirecard extends Controller
             $template = 'wirecard_invoice';
             $data['txt_info'] = $this->language->get('text_invoice_info');
             $data['txt_birthday'] = $this->language->get('text_birthday');
-        } else {
-            $template = 'wirecard_init';
         }
 
         $data['send_order'] = $this->language->get('send_order');
@@ -261,7 +260,8 @@ class ControllerExtensionPaymentWirecard extends Controller
                     // confirm,
                     // so do an update in this case
                     if ($order['order_status_id']) {
-                        $this->model_checkout_order->update($order_id, $successStatus, $comment, true);
+                    	$this->editOrder($order_id, array('order_status_id' => $successStatus));
+	                    $this->model_checkout_order->addOrderHistory($order_id, $successStatus, $comment, false);
                     } else {
                         $this->model_checkout_order->addOrderHistory($order_id, $successStatus, $comment, true);
                     }
@@ -296,6 +296,17 @@ class ControllerExtensionPaymentWirecard extends Controller
         }
         echo WirecardCEE_QPay_ReturnFactory::generateConfirmResponseString($message);
     }
+
+	private function editOrder( $order_id, $data ) {
+		$query = "UPDATE `" . DB_PREFIX . "order` SET ";
+		foreach ( $data as $key => $value ) {
+			$query .= $key . " = " . $this->db->escape($value);
+			$query .= ", ";
+		}
+		$query = rtrim( $query, ", ");
+		$query .= " WHERE order_id = " .$this->db->escape( $order_id ) . ";";
+		$this->db->query( $query );
+	}
 
     /**
      * redirection of successfull payment
