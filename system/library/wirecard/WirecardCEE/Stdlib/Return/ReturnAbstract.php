@@ -110,18 +110,18 @@ abstract class WirecardCEE_Stdlib_Return_ReturnAbstract
         return (bool) $_bValid;
     }
 
-    /**
-     * Adds the validator
-     *
-     * @param Zend_Validate_Abstract $oValidator
-     * @param string $param
-     * @return WirecardCEE_Stdlib_Return_ReturnAbstract
-     */
-    public function addValidator(Zend_Validate_Abstract $oValidator, $param)
-    {
-        $this->_validators[(string)$param][] = $oValidator;
-        return $this;
-    }
+	/**
+	 * Adds the validator
+	 *
+	 * @param Zend_Validate_Abstract $oValidator
+	 * @param string $param
+	 * @return WirecardCEE_Stdlib_Return_ReturnAbstract
+	 */
+	public function addValidator(Zend_Validate_Abstract $oValidator, $param)
+	{
+		$this->_validators[(string)$param][] = $oValidator;
+		return $this;
+	}
 
     /**
      * getter for paymentState

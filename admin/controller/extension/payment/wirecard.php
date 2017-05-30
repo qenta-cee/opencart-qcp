@@ -61,7 +61,8 @@ class ControllerExtensionPaymentWirecard extends Controller
         'confirmMail' => 'input',
         'customerStatement' => 'textarea',
         'iframe' => 'true_false',
-        'consumerInformation' => 'true_false'
+        'consumerInformation' => 'true_false',
+        'basketData' => 'true_false'
     );
 
     // define mandatory input fields, by false no error occur

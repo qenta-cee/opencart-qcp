@@ -128,6 +128,7 @@ class ModelExtensionPaymentWirecard extends Model
         }
 
         $data['sendConsumerInformation'] = $this->config->get($prefix . '_consumerInformation') == '1';
+        $data['sendBasketData'] = $this->config->get($prefix . '_basketData') == '1';
 
         return $data;
     }
@@ -270,7 +271,11 @@ class ModelExtensionPaymentWirecard extends Model
                 ->setMaxRetries($fields['maxRetries'])
                 ->setAutoDeposit($fields['autoDeposit'])
                 ->setWindowName($this->get_window_name())
-                ->setCustomerLayout($strCustomerLayout);
+                ->setLayout($strCustomerLayout);
+
+            if ($fields['sendBasketData']) {
+                $this->set_basket_data();
+            }
 
             $client->opencartOrderId = $order['order_id'];
 
@@ -287,6 +292,14 @@ class ModelExtensionPaymentWirecard extends Model
         }
 
         return $response->getRedirectUrl();
+    }
+
+
+    public function set_basket_data() {
+        //Add basketdata
+	    /*foreach ($this->cart->getProducts() as $product) {
+			 $sub_total = $product['total'];
+	    }*/
     }
 
     /**

@@ -110,3 +110,6 @@ $_['consumerInformation_descript'] = '';
 
 $_['no'] = 'Inactive';
 $_['yes'] = 'Active';
+
+$_['basketData_title'] = 'Forward basket data';
+$_['basketData_desc'] = 'Forwarding basket data to the respective financial service provider.';

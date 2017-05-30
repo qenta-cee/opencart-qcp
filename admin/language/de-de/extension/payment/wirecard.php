@@ -130,4 +130,7 @@ $_['consumerInformation_desc'] = '';
 
 $_['no'] = 'Inaktiv';
 $_['yes'] = 'Aktiv';
-?>
+
+$_['basketData_title'] = 'Warenkorbdaten des Konsumenten mitsenden';
+$_['basketData_desc'] = 'Weiterletung des Warenkorbs des Kunden an den Finanzdienstleister';
+
