@@ -273,8 +273,8 @@ class ModelExtensionPaymentWirecard extends Model
                 ->setWindowName($this->get_window_name())
                 ->setLayout($strCustomerLayout);
 
-            if ($fields['sendBasketData']) {
-                $this->set_basket_data();
+            if ($fields['sendBasketData'] || $paymentType == WirecardCEE_QPay_PaymentType::INVOICE || $paymentType == WirecardCEE_QPay_PaymentType::INSTALLMENT) {
+                $client->setBasket($this->set_basket_data());
             }
 
             $client->opencartOrderId = $order['order_id'];
@@ -294,13 +294,62 @@ class ModelExtensionPaymentWirecard extends Model
         return $response->getRedirectUrl();
     }
 
-
+	/**
+	 * Create basket items including shipping and fix taxes
+	 *
+	 * @return WirecardCEE_Stdlib_Basket
+	 */
     public function set_basket_data() {
-        //Add basketdata
-	    /*foreach ($this->cart->getProducts() as $product) {
-			 $sub_total = $product['total'];
-	    }*/
-    }
+		$basket        = new WirecardCEE_Stdlib_Basket();
+		$basketContent = $this->cart;
+
+		$fix_tax = 0;
+		foreach ($basketContent->getProducts() as $cart_item_key => $cart_item) {
+			$item         = new WirecardCEE_Stdlib_Basket_Item($cart_item['product_id']);
+			$gross_amount = $this->tax->calculate($cart_item['price'], $cart_item['tax_class_id'], 'P');
+			$tax_amount   = $gross_amount - $cart_item['price'];
+			$item->setUnitGrossAmount($gross_amount)
+				->setUnitNetAmount($cart_item['price'])
+				->setUnitTaxAmount($tax_amount)
+				->setUnitTaxRate($tax_amount / $cart_item['price'] * 100)
+				->setDescription($cart_item['name'])
+				->setName($cart_item['name'])
+				->setImageUrl($this->url->link($cart_item['image']));
+
+			$basket->addItem($item, $cart_item['quantity']);
+			$fix_tax += $this->tax->calculate($cart_item['price'], $cart_item['tax_class_id'], 'F') - $cart_item['price'];
+		}
+
+		//Add shipping to basket
+		if (isset($this->session->data['shipping_method'])) {
+			$session_data    = $this->session->data;
+			$shipping_method = $session_data['shipping_method'];
+			$item            = new WirecardCEE_Stdlib_Basket_Item('shipping');
+			$item->setUnitGrossAmount($this->tax->calculate($shipping_method['cost'], $shipping_method['tax_class_id'], 'P'))
+				->setUnitNetAmount($shipping_method['cost'])
+				->setUnitTaxRate($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']) / $shipping_method['cost'] * 100)
+				->setUnitTaxAmount($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']))
+				->setName('Shipping')
+				->setDescription('Shipping');
+			$basket->addItem($item);
+			$fix_tax += $this->tax->calculate($shipping_method['cost'], $shipping_method['tax_class_id'], 'F') - $shipping_method['cost'];
+		}
+
+		// Add fix tax as basket item
+		if ($fix_tax > 0) {
+			$item = new WirecardCEE_Stdlib_Basket_Item('FixTax');
+			$item->setUnitGrossAmount($fix_tax)
+				->setUnitNetAmount($fix_tax)
+				->setUnitTaxAmount(0)
+				->setUnitTaxRate(0)
+				->setDescription('FixTax')
+				->setName('FixTax');
+
+			$basket->addItem($item, 1);
+		}
+
+		return $basket;
+	}
 
     /**
      * @param $message
