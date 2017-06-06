@@ -120,6 +120,9 @@ class ControllerExtensionPaymentWirecard extends Controller
         $data['arrayLanguageText']['no'] = $this->language->get('no');
         $data['arrayLanguageText']['yes'] = $this->language->get('yes');
         $data['arrayLanguageText']['license_text'] = $this->language->get('license_text');
+	    $data['arrayLanguageText']['payolution'] = $this->language->get('payolution');
+	    $data['arrayLanguageText']['wirecard'] = $this->language->get('wirecard');
+	    $data['arrayLanguageText']['ratepay'] = $this->language->get('ratepay');
 
         //define input fields
         $data['inputfields'] = $this->arrayInputFields;

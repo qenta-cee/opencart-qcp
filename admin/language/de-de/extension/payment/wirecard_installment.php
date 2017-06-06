@@ -36,3 +36,6 @@
 
 $_['heading_title'] = 'Wirecard Checkout Page Ratenzahlung';
 $_['text_wirecard_installment'] = '<a href="http://www.wirecard.at/" target="_blank"><img src="view/image/payment/wirecard.png" alt="Wirecard" title="Wirecard CEE" /></a>';
+
+$_['installment_provider_title'] = 'Provider für Kauf auf Raten';
+$_['installment_provider_descript'] = 'Wählen Sie Ihren Kauf auf Raten Provider aus';

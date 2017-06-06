@@ -36,3 +36,6 @@
 
 $_['heading_title'] = 'Wirecard Checkout Page Installment';
 $_['text_wirecard_installment'] = '<a href="http://www.wirecard.at/" target="_blank"><img src="view/image/payment/wirecard.png" alt="Wirecard" title="Wirecard CEE" /></a>';
+
+$_['installment_provider_title'] = 'Installment Provider';
+$_['installment_provider_descript'] = 'Select your installment provider';

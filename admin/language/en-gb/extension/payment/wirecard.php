@@ -105,11 +105,15 @@ $_['customerStatement_descript'] = 'This text appears on the billing of customer
 $_['iframe_title'] = 'iFrame';
 $_['iframe_descript'] = 'Should the payment page be displayed in an iframe?';
 
-$_['consumerInformation_title'] = 'Send Consumer Information ?';
-$_['consumerInformation_descript'] = '';
+$_['consumerInformation_title'] = 'Forward consumer data';
+$_['consumerInformation_descript'] = 'Forwarding shipping and billing data about your consumer to the respective financial service provider.';
 
 $_['no'] = 'Inactive';
 $_['yes'] = 'Active';
 
 $_['basketData_title'] = 'Forward basket data';
-$_['basketData_desc'] = 'Forwarding basket data to the respective financial service provider.';
+$_['basketData_descript'] = 'Forwarding basket data to the respective financial service provider.';
+
+$_['payolution'] = 'payolution';
+$_['wirecard'] = 'Wirecard';
+$_['ratepay'] = 'RatePay';
