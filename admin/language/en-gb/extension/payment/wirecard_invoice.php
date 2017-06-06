@@ -37,5 +37,8 @@
 $_['heading_title'] = 'Wirecard Checkout Page Invoice';
 $_['text_wirecard_invoice'] = '<a href="http://www.wirecard.at/" target="_blank"><img src="view/image/payment/wirecard.png" alt="Wirecard" title="Wirecard CEE" /></a>';
 
-$_['invoice_provider_title'] = 'Invoice Provider';
-$_['invoice_provider_descript'] = 'Select your invoice provider';
+$_['provider_title'] = 'Invoice Provider';
+$_['provider_descript'] = 'Select your invoice provider';
+
+$_['country_title'] = 'Allowed countries';
+$_['country_descript'] = 'Select allowed countries for invoice';

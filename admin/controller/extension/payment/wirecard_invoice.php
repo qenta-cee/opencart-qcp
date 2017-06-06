@@ -65,7 +65,8 @@ class ControllerExtensionPaymentWirecardInvoice extends ControllerExtensionPayme
         'confirmMail' => 'input',
         'customerStatement' => 'textarea',
         'iframe' => 'true_false',
-        'provider' => 'select_provider'
+        'provider' => 'select_provider',
+        'country' => 'select_country'
     );
 
     /**

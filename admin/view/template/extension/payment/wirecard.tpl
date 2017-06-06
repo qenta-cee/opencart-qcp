@@ -209,6 +209,34 @@
 </div>
 <?php endif; ?>
 
+<?php if($fieldtype == 'select_country'): ?>
+<div class="form-group <?php if (array_key_exists($fieldname, $arrayInputFieldsMandatory)) echo " required ";?>">
+<label class="col-sm-2 control-label"
+	   for="select-<?php echo $prefix.$fieldname;?>">
+                           <span title=""
+								 data-toggle="tooltip"
+								 data-original-title="<?php echo $arrayLanguageText[$fieldname . '_descript']; ?>">
+                                        <?php echo $arrayLanguageText[$fieldname . '_title']; ?>
+                            </span>
+</label>
+<div class="col-sm-10">
+	<select multiple class="form-control"
+			id="select-<?php echo $prefix.$fieldname;?>"
+			name="<?php echo $prefix.$fieldname;?>[]">
+		<option value="0"><?php echo $arrayLanguageText['all_countries']; ?></option>
+		<?php foreach ($countries as $country) { ?>
+		<?php if (in_array($country['country_id'], $input[$prefix.$fieldname])) { ?>
+		<option value="<?php echo $country['country_id']; ?>"
+				selected="selected"><?php echo $country['name']; ?></option>
+		<?php } else { ?>
+		<option value="<?php echo $country['country_id']; ?>"><?php echo $country['name']; ?></option>
+		<?php } ?>
+		<?php } ?>
+	</select>
+</div>
+</div>
+<?php endif; ?>
+
 	<?php if($fieldtype == 'status_code'): ?>
 	<div class="form-group <?php if (array_key_exists($fieldname, $arrayInputFieldsMandatory)) echo " required
 	";?>">

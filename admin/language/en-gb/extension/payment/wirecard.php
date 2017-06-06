@@ -117,3 +117,5 @@ $_['basketData_descript'] = 'Forwarding basket data to the respective financial 
 $_['payolution'] = 'payolution';
 $_['wirecard'] = 'Wirecard';
 $_['ratepay'] = 'RatePay';
+
+$_['all_countries'] = 'All countries';

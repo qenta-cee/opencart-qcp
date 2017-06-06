@@ -74,11 +74,6 @@ class ModelExtensionPaymentWirecardInvoice extends ModelExtensionPaymentWirecard
             }
         }
 
-        $total = $this->currency->format($total, '', '', false);
-        if ($this->currency->getCode() != 'EUR') {
-            return false;
-        }
-
         $fieldValue = $this->config->get($this->prefix . $this->payment_type . '_minAmount');
         if (!empty($fieldValue) and $total < $fieldValue) {
             return false;

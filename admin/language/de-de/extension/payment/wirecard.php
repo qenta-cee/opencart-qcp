@@ -137,3 +137,5 @@ $_['basketData_descript'] = 'Weiterletung des Warenkorbs des Kunden an den Finan
 $_['payolution'] = 'payolution';
 $_['wirecard'] = 'Wirecard';
 $_['ratepay'] = 'RatePay';
+
+$_['all_countries'] = 'Alle Länder';

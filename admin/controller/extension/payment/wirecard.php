@@ -62,7 +62,7 @@ class ControllerExtensionPaymentWirecard extends Controller
         'customerStatement' => 'textarea',
         'iframe' => 'true_false',
         'consumerInformation' => 'true_false',
-        'basketData' => 'true_false'
+        'basketData' => 'true_false',
     );
 
     // define mandatory input fields, by false no error occur
@@ -185,6 +185,8 @@ class ControllerExtensionPaymentWirecard extends Controller
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
+        $this->load->model('localisation/country');
+        $data['countries'] = $this->model_localisation_country->getCountries();
 
         $this->response->setOutput($this->load->view('extension/payment/wirecard', $data));
     }

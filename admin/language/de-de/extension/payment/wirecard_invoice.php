@@ -37,5 +37,8 @@
 $_['heading_title'] = 'Wirecard Checkout Page Rechnung';
 $_['text_wirecard_invoice'] = '<a href="http://www.wirecard.at/" target="_blank"><img src="view/image/payment/wirecard.png" alt="Wirecard" title="Wirecard CEE" /></a>';
 
-$_['invoice_provider_title'] = 'Provider für Kauf auf Rechnung';
-$_['invoice_provider_descript'] = 'Wählen Sie Ihren Kauf auf Rechnung Provider aus';
+$_['provider_title'] = 'Provider für Kauf auf Rechnung';
+$_['provider_descript'] = 'Wählen Sie Ihren Kauf auf Rechnung Provider aus';
+
+$_['country_title'] = 'Erlaubte Länder';
+$_['country_descript'] = 'Wählen Sie die erlaubten Länder für Kauf auf Rechnung aus';
