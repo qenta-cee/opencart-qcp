@@ -266,11 +266,12 @@ class ModelExtensionPaymentWirecard extends Model
                 ->setConsumerData($consumerData)
                 ->createConsumerMerchantCrmId($order['email'])
                 ->setDisplayText($fields['displayText'])
-                ->setCustomerStatement($this->get_customer_statement($order))
+                ->setCustomerStatement($this->get_customer_statement($order, $paymentType))
                 ->setDuplicateRequestCheck(false)
                 ->setMaxRetries($fields['maxRetries'])
                 ->setAutoDeposit($fields['autoDeposit'])
                 ->setWindowName($this->get_window_name())
+	            ->setOrderReference($this->get_order_reference($order))
                 ->setLayout($strCustomerLayout);
 
             if ($fields['sendBasketData'] || $paymentType == WirecardCEE_QPay_PaymentType::INVOICE || $paymentType == WirecardCEE_QPay_PaymentType::INSTALLMENT) {
@@ -308,27 +309,26 @@ class ModelExtensionPaymentWirecard extends Model
 			$item         = new WirecardCEE_Stdlib_Basket_Item($cart_item['product_id']);
 			$gross_amount = $this->tax->calculate($cart_item['price'], $cart_item['tax_class_id'], 'P');
 			$tax_amount   = $gross_amount - $cart_item['price'];
-			$item->setUnitGrossAmount($gross_amount)
-				->setUnitNetAmount($cart_item['price'])
-				->setUnitTaxAmount($tax_amount)
+			$item->setUnitGrossAmount(number_format($gross_amount, 2))
+				->setUnitNetAmount(number_format($cart_item['price'], 2))
+				->setUnitTaxAmount(number_format($tax_amount, 2))
 				->setUnitTaxRate($tax_amount / $cart_item['price'] * 100)
-				->setDescription($cart_item['name'])
-				->setName($cart_item['name'])
+				->setDescription(substr(utf8_decode($cart_item['name']), 0, 127))
+				->setName(substr(utf8_decode($cart_item['name']), 0, 127))
 				->setImageUrl($this->url->link($cart_item['image']));
 
 			$basket->addItem($item, $cart_item['quantity']);
 			$fix_tax += $this->tax->calculate($cart_item['price'], $cart_item['tax_class_id'], 'F') - $cart_item['price'];
 		}
-
 		//Add shipping to basket
 		if (isset($this->session->data['shipping_method'])) {
 			$session_data    = $this->session->data;
 			$shipping_method = $session_data['shipping_method'];
 			$item            = new WirecardCEE_Stdlib_Basket_Item('shipping');
-			$item->setUnitGrossAmount($this->tax->calculate($shipping_method['cost'], $shipping_method['tax_class_id'], 'P'))
-				->setUnitNetAmount($shipping_method['cost'])
+			$item->setUnitGrossAmount(number_format($this->tax->calculate($shipping_method['cost'], $shipping_method['tax_class_id'], 'P'), 2))
+				->setUnitNetAmount(number_format($shipping_method['cost'], 2))
 				->setUnitTaxRate($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']) / $shipping_method['cost'] * 100)
-				->setUnitTaxAmount($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']))
+				->setUnitTaxAmount(number_format($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']), 2))
 				->setName('Shipping')
 				->setDescription('Shipping');
 			$basket->addItem($item);
@@ -338,9 +338,9 @@ class ModelExtensionPaymentWirecard extends Model
 		// Add fix tax as basket item
 		if ($fix_tax > 0) {
 			$item = new WirecardCEE_Stdlib_Basket_Item('FixTax');
-			$item->setUnitGrossAmount($fix_tax)
-				->setUnitNetAmount($fix_tax)
-				->setUnitTaxAmount(0)
+			$item->setUnitGrossAmount(number_format($fix_tax, 2))
+				->setUnitNetAmount(number_format($fix_tax, 2))
+				->setUnitTaxAmount(number_format(0, 2))
 				->setUnitTaxRate(0)
 				->setDescription('FixTax')
 				->setName('FixTax');
@@ -380,18 +380,35 @@ class ModelExtensionPaymentWirecard extends Model
      */
     protected function get_order_description($order)
     {
-        return sprintf('user_id:%s order_id:%s', $order['customer_id'], $order['order_id']);
+	    return sprintf('%s %s %s',
+		    $order['email'],
+		    $order['payment_firstname'],
+		    $order['payment_lastname']
+	    );
     }
 
     /**
      * @param $order
      * @return string
      */
-    protected function get_customer_statement($order)
+    protected function get_customer_statement($order, $payment_type)
     {
-        return sprintf('%s #%06s', $order['store_name'], $order['order_id']);
+        $customer_statement = sprintf('%9s', substr($order['store_name'], 0, 9));
+	    if ($payment_type != WirecardCEE_QPay_PaymentType::POLI) {
+		    $customer_statement .= ' ' . $this->get_order_reference($order);
+	    }
+	    return $customer_statement;
     }
 
+	/**
+	 * @param $order
+	 *
+	 * @return string
+	 */
+    protected function get_order_reference($order)
+    {
+    	return sprintf('%010s', substr($order['order_id'], -10));
+    }
     /**
      * @return string
      */
