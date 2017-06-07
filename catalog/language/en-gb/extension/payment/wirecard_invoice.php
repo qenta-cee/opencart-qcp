@@ -37,4 +37,5 @@
 $_['text_title'] = 'Invoice';
 $_['text_reason'] = 'REASON';
 $_['text_total'] = 'Shipping, Handling, Discounts & Taxes';
-$_['text_invoice_info'] = 'Additional Information';
+$_['text_birthday'] = 'Birthday';
+$_['text_birthday_information'] = 'You must be at least 18 years of age to use this payment method.';

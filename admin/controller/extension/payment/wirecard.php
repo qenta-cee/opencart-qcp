@@ -187,6 +187,8 @@ class ControllerExtensionPaymentWirecard extends Controller
         $data['footer'] = $this->load->controller('common/footer');
         $this->load->model('localisation/country');
         $data['countries'] = $this->model_localisation_country->getCountries();
+        $this->load->model('localisation/currency');
+        $data['currencies'] = $this->model_localisation_currency->getCurrencies();
 
         $this->response->setOutput($this->load->view('extension/payment/wirecard', $data));
     }

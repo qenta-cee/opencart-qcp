@@ -42,3 +42,6 @@ $_['provider_descript'] = 'Wählen Sie Ihren Kauf auf Rechnung Provider aus';
 
 $_['country_title'] = 'Erlaubte Länder';
 $_['country_descript'] = 'Wählen Sie die erlaubten Länder für Kauf auf Rechnung aus';
+
+$_['currency_title'] = 'Akzeptierte Währungen';
+$_['currency_descript'] = 'Wählen Sie die akzeptierten Währungen für Kauf auf Rechnung aus';

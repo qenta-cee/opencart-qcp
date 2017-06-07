@@ -34,7 +34,8 @@
  * terms of use!
  */
 
-$_['text_title'] = 'Rechnung';
+$_['text_title'] = 'Kauf auf Rechnung';
 $_['text_reason'] = 'REASON';
 $_['text_total'] = 'Shipping, Handling, Discounts & Taxes';
-$_['text_installment_info'] = 'Zusatzinformationen f&uuml;r Rechnung';
+$_['text_birthday'] = 'Geburtsdatum';
+$_['text_birthday_information'] = 'Sie müssen mindestens 18 Jahre alt sein, um dieses Zahlungsmittel nutzen zu können.';

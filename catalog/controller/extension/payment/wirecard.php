@@ -43,7 +43,7 @@ class ControllerExtensionPaymentWirecard extends Controller
 {
     protected $data = array();
 
-    private $pluginVersion = '1.5.0';
+    private $pluginVersion = '1.6.0';
 
     private $prefix = 'wirecard';
 
@@ -75,15 +75,6 @@ class ControllerExtensionPaymentWirecard extends Controller
 
         // Set Template
 	    $template = 'wirecard_init';
-        if ($this->payment_type == WirecardCEE_QPay_PaymentType::INSTALLMENT) {
-            $template = 'wirecard_installment';
-            $data['txt_info'] = $this->language->get('text_installment_info');
-            $data['txt_birthday'] = $this->language->get('text_birthday');
-        } elseif ($this->payment_type == WirecardCEE_QPay_PaymentType::INVOICE) {
-            $template = 'wirecard_invoice';
-            $data['txt_info'] = $this->language->get('text_invoice_info');
-            $data['txt_birthday'] = $this->language->get('text_birthday');
-        }
 
         $data['send_order'] = $this->language->get('send_order');
         $data['error_init'] = $this->language->get('error_init');

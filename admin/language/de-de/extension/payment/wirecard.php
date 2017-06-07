@@ -138,4 +138,3 @@ $_['payolution'] = 'payolution';
 $_['wirecard'] = 'Wirecard';
 $_['ratepay'] = 'RatePay';
 
-$_['all_countries'] = 'Alle Länder';

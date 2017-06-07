@@ -34,7 +34,9 @@
  * terms of use!
  */
 
-$_['text_title'] = 'Ratenzahlung';
+$_['text_title'] = 'Kauf auf Raten';
 $_['text_reason'] = 'REASON';
 $_['text_total'] = 'Shipping, Handling, Discounts & Taxes';
 $_['text_installment_info'] = 'Zusatzinformationen f&uuml;r Ratenzahlung';
+$_['text_birthday'] = 'Geburtsdatum';
+$_['text_birthday_information'] = 'Sie müssen mindestens 18 Jahre alt sein, um dieses Zahlungsmittel nutzen zu können.';

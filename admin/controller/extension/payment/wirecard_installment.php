@@ -66,7 +66,8 @@ class ControllerExtensionPaymentWirecardInstallment extends ControllerExtensionP
         'customerStatement' => 'textarea',
         'iframe' => 'true_false',
         'provider' => 'select_provider',
-        'country' => 'select_country'
+        'country' => 'select_country',
+        'currency' => 'select_currency'
     );
 
     /**

@@ -119,3 +119,4 @@ $_['wirecard'] = 'Wirecard';
 $_['ratepay'] = 'RatePay';
 
 $_['all_countries'] = 'All countries';
+$_['all_currencies'] = 'All currencies';

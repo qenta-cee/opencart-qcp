@@ -42,3 +42,6 @@ $_['provider_descript'] = 'Select your invoice provider';
 
 $_['country_title'] = 'Allowed countries';
 $_['country_descript'] = 'Select allowed countries for invoice';
+
+$_['currency_title'] = 'Accepted currencies';
+$_['currency_descript'] = 'Select accepted currencies for invoice';
