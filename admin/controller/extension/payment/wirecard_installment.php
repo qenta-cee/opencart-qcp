@@ -53,8 +53,6 @@ class ControllerExtensionPaymentWirecardInstallment extends ControllerExtensionP
         'backgroundColor' => 'input',
         'imageURL' => 'input',
         'displayText' => 'textarea',
-        'minAmount' => 'input',
-        'maxAmount' => 'input',
         'success_status' => 'status_code',
         'pending_status' => 'status_code',
         'failure_status' => 'status_code',
@@ -66,6 +64,10 @@ class ControllerExtensionPaymentWirecardInstallment extends ControllerExtensionP
         'customerStatement' => 'textarea',
         'iframe' => 'true_false',
         'provider' => 'select_provider',
+        'terms' => 'true_false',
+        'mId' => 'input',
+        'minAmount' => 'input',
+        'maxAmount' => 'input',
         'country' => 'select_country',
         'currency' => 'select_currency'
     );

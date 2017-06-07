@@ -43,25 +43,31 @@ class ControllerExtensionPaymentWirecardInvoice extends ControllerExtensionPayme
     public $payment_type_prefix = '_invoice';
     public $payment_type = WirecardCEE_QPay_PaymentType::INVOICE;
 
-	public function index()
-	{
-		$prefix = 'wirecard' . $this->payment_type_prefix;
+	public function index() {
+		$prefix = 'wirecard'.$this->payment_type_prefix;
 
 		// Load required files
 		$this->load->model('checkout/order');
 		$this->load->model('extension/payment/wirecard');
 
 		$this->load->language('extension/payment/wirecard');
-		$this->load->language('extension/payment/' . $prefix);
+		$this->load->language('extension/payment/'.$prefix);
 
 		// additional Data
 		$data['button_confirm'] = $this->language->get('button_confirm');
-		$data['window_name'] = $this->model_extension_payment_wirecard->get_window_name();
+		$data['window_name']    = $this->model_extension_payment_wirecard->get_window_name();
 
-		$template = 'wirecard_invoice';
-		$data['text_title'] = $this->language->get('text_title');
-		$data['text_birthday'] = $this->language->get('text_birthday');
+		$template                          = 'wirecard_invoice';
+		$data['provider']                  = $this->config->get($prefix.'_provider');
+		$data['terms']                     = $this->config->get($prefix.'_terms');
+		$data['mId']                       = $this->config->get($prefix.'_mId');
+		$data['text_title']                = $this->language->get('text_title');
+		$data['text_birthday']             = $this->language->get('text_birthday');
 		$data['text_birthday_information'] = $this->language->get('text_birthday_information');
+		$data['text_payolution_title']     = $this->language->get('text_payolution_title');
+		$data['text_payolution_consent1']  = $this->language->get('text_payolution_consent1');
+		$data['text_payolution_consent2']  = $this->language->get('text_payolution_consent2');
+		$data['text_payolution_link']      = $this->language->get('text_payolution_link');
 
 		$data['years']  = range(date('Y'), date('Y') - 100);
 		$data['days']   = range(1, 31);
@@ -71,13 +77,13 @@ class ControllerExtensionPaymentWirecardInvoice extends ControllerExtensionPayme
 		$data['error_init'] = $this->language->get('error_init');
 
 		// Set Action URI
-		$data['action'] = $this->url->link('extension/payment/' . $prefix . '/init', '', 'SSL');
+		$data['action'] = $this->url->link('extension/payment/'.$prefix.'/init', '', 'SSL');
 
 		// Template Output
-		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/' . $template . '.tpl')) {
-			$this->template = $this->config->get('config_template') . '/template/extension/payment/' . $template . '.tpl';
+		if (file_exists(DIR_TEMPLATE.$this->config->get('config_template').'/template/extension/payment/'.$template.'.tpl')) {
+			$this->template = $this->config->get('config_template').'/template/extension/payment/'.$template.'.tpl';
 		} else {
-			$this->template = 'extension/payment/' . $template . '.tpl';
+			$this->template = 'extension/payment/'.$template.'.tpl';
 		}
 
 		return $this->load->view($this->template, $data);

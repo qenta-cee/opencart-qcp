@@ -53,8 +53,6 @@ class ControllerExtensionPaymentWirecardInvoice extends ControllerExtensionPayme
         'backgroundColor' => 'input',
         'imageURL' => 'input',
         'displayText' => 'textarea',
-        'minAmount' => 'input',
-        'maxAmount' => 'input',
         'success_status' => 'status_code',
         'pending_status' => 'status_code',
         'failure_status' => 'status_code',
@@ -66,6 +64,10 @@ class ControllerExtensionPaymentWirecardInvoice extends ControllerExtensionPayme
         'customerStatement' => 'textarea',
         'iframe' => 'true_false',
         'provider' => 'select_provider',
+        'terms' => 'true_false',
+	    'mId' => 'input',
+        'minAmount' => 'input',
+        'maxAmount' => 'input',
         'country' => 'select_country',
         'currency' => 'select_currency'
     );

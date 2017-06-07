@@ -66,6 +66,21 @@
         </div>
         <div class="form-group">
             <div class="col-sm-2"></div><div class="col-sm-9"><?php echo $text_birthday_information; ?></div></div>
+        <?php if($provider == 'payolution' && $terms){ ?>
+        <div class="form-group required">
+            <label class="col-sm-2 control-label" for="wcp_payolution_cond"><?php echo $text_payolution_title; ?></label>
+            <div class="col-sm-9"><span><input type="checkbox" required="required" id="wcp_payolution_cond" onchange="checkbirthday()" /></span>
+                <span><?php echo $text_payolution_consent1;
+                if (strlen($mId)) {
+                    echo '<a id="wcp-payolutionlink" href="https://payment.payolution.com/payolution-payment/infoport/dataprivacyconsent?mId='.$mId.'" target="_blank">' . $text_payolution_link .'</a>';
+                }else {
+                    echo $text_payolution_link;
+                }
+                echo $text_payolution_consent2; ?>
+                </span>
+            </div>
+        </div>
+        <?php } ?>
     </fieldset>
     <div class="pull-right">
         <input type="submit" class="btn btn-primary" id="button-confirm" value="<?php echo $button_confirm; ?>" />
