@@ -101,7 +101,7 @@ class ModelExtensionPaymentWirecard extends Model
      * @param $prefix
      * @return mixed
      */
-    public function get_config($prefix)
+    public function getConfig($prefix)
     {
         // set defined fields
         foreach ($this->fields as $field) {
@@ -139,7 +139,7 @@ class ModelExtensionPaymentWirecard extends Model
      *
      * set consumerdata
      */
-    public function set_consumer_information($order, WirecardCEE_Stdlib_ConsumerData $consumer_data)
+    public function setConsumerInformation($order, WirecardCEE_Stdlib_ConsumerData $consumer_data)
     {
 
         $consumer_data->setEmail($order['email']);
@@ -211,9 +211,9 @@ class ModelExtensionPaymentWirecard extends Model
      *
      * send payment request
      */
-    public function send_request($prefix, $paymentType, $order, $birthday, $plugin_version, $financialinstitution)
+    public function sendRequest($prefix, $paymentType, $order, $birthday, $plugin_version, $financialinstitution)
     {
-        $fields = $this->get_config($prefix);
+        $fields = $this->getConfig($prefix);
         try {
             $language_info = $order['language_code'];
             //languagecode is like 'en-gb' but should be 'en'
@@ -251,10 +251,10 @@ class ModelExtensionPaymentWirecard extends Model
                     Array(WirecardCEE_QPay_PaymentType::INVOICE, WirecardCEE_QPay_PaymentType::INSTALLMENT)
                 )
             ) {
-                $this->set_consumer_information($order, $consumerData);
+                $this->setConsumerInformation($order, $consumerData);
             }
 
-            $strCustomerLayout = $this->get_customer_layout();
+            $strCustomerLayout = $this->getCustomerLayout();
 
             $client
                 ->setAmount(
@@ -262,7 +262,7 @@ class ModelExtensionPaymentWirecard extends Model
                 )
                 ->setCurrency($order['currency_code'])
                 ->setPaymentType($paymentType)
-                ->setOrderDescription($this->get_order_description($order))
+                ->setOrderDescription($this->getOrderDescription($order))
                 ->setPluginVersion($plugin_version)
                 ->setSuccessUrl($this->url->link('extension/payment/' . $prefix . '/success', null, 'SSL'))
                 ->setPendingUrl($this->url->link('extension/payment/' . $prefix . '/success', null, 'SSL'))
@@ -274,26 +274,29 @@ class ModelExtensionPaymentWirecard extends Model
                 ->setConsumerData($consumerData)
                 ->createConsumerMerchantCrmId($order['email'])
                 ->setDisplayText($fields['displayText'])
-                ->setCustomerStatement($this->get_customer_statement($order, $paymentType))
+                ->setCustomerStatement($this->getCustomerStatement($order, $paymentType))
                 ->setDuplicateRequestCheck(false)
                 ->setMaxRetries($fields['maxRetries'])
                 ->setAutoDeposit($fields['autoDeposit'])
                 ->setWindowName($this->get_window_name())
-	            ->setOrderReference($this->get_order_reference($order))
+	            ->setOrderReference($this->getOrderReference($order))
                 ->setLayout($strCustomerLayout);
 
-            if ($fields['sendBasketData'] || $paymentType == WirecardCEE_QPay_PaymentType::INVOICE || $paymentType == WirecardCEE_QPay_PaymentType::INSTALLMENT) {
-                $client->setBasket($this->set_basket_data());
-            }
+	        if ($fields['sendBasketData'] ||
+		        ($paymentType == WirecardCEE_QPay_PaymentType::INVOICE && $this->config->get($prefix.'_provider') != 'payolution') ||
+		        ($paymentType == WirecardCEE_QPay_PaymentType::INSTALLMENT && $this->config->get($prefix.'_provider') != 'payolution')
+	        ) {
+		        $client->setBasket($this->setBasketData());
+	        }
 
             $client->opencartOrderId = $order['order_id'];
 
-            $this->write_log(__METHOD__ . "\n" . print_r($client->getRequestData(), true));
+            $this->writeLog(__METHOD__ . "\n" . print_r($client->getRequestData(), true));
 
             $response = $client->initiate();
 
             if ($response->hasFailed()) {
-                $this->write_log("Response failed! Error: {$response->getError()->getMessage()}");
+                $this->writeLog("Response failed! Error: {$response->getError()->getMessage()}");
                 return false;
             }
         } catch (Exception $e) {
@@ -308,7 +311,7 @@ class ModelExtensionPaymentWirecard extends Model
 	 *
 	 * @return WirecardCEE_Stdlib_Basket
 	 */
-    public function set_basket_data() {
+	public function setBasketData() {
 		$basket        = new WirecardCEE_Stdlib_Basket();
 		$basketContent = $this->cart;
 
@@ -364,7 +367,7 @@ class ModelExtensionPaymentWirecard extends Model
      *
      * write to logfile
      */
-    public function write_log($message)
+    public function writeLog($message)
     {
         $date = date("Y-m-d");
         $log_path = DIR_SYSTEM . 'storage/logs/';
@@ -386,7 +389,7 @@ class ModelExtensionPaymentWirecard extends Model
      * @param $order
      * @return string
      */
-    protected function get_order_description($order)
+    protected function getOrderDescription($order)
     {
 	    return sprintf('%s %s %s',
 		    $order['email'],
@@ -399,11 +402,11 @@ class ModelExtensionPaymentWirecard extends Model
      * @param $order
      * @return string
      */
-    protected function get_customer_statement($order, $payment_type)
+    protected function getCustomerStatement($order, $payment_type)
     {
         $customer_statement = sprintf('%9s', substr($order['store_name'], 0, 9));
 	    if ($payment_type != WirecardCEE_QPay_PaymentType::POLI) {
-		    $customer_statement .= ' ' . $this->get_order_reference($order);
+		    $customer_statement .= ' ' . $this->getOrderReference($order);
 	    }
 	    return $customer_statement;
     }
@@ -413,14 +416,14 @@ class ModelExtensionPaymentWirecard extends Model
 	 *
 	 * @return string
 	 */
-    protected function get_order_reference($order)
+    protected function getOrderReference($order)
     {
     	return sprintf('%010s', substr($order['order_id'], -10));
     }
     /**
      * @return string
      */
-    protected function get_customer_layout()
+    protected function getCustomerLayout()
     {
         $objMobileDetect = new WirecardCEE_Stdlib_Mobiledetect();
         $layout = "desktop";

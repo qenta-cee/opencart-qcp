@@ -155,7 +155,7 @@ class ControllerExtensionPaymentWirecard extends Controller
 
         // set fields, optional, comsumer, generate fingerprint, send request, redirect
         // user
-        $result = $this->model_extension_payment_wirecard->send_request($prefix, $paymentType, $order_info, $birthday,
+        $result = $this->model_extension_payment_wirecard->sendRequest($prefix, $paymentType, $order_info, $birthday,
             $pluginVersion, $financial_institution);
 
         // If connection to wirecard success set template
@@ -204,12 +204,12 @@ class ControllerExtensionPaymentWirecard extends Controller
         $this->load->model('checkout/order');
         $this->load->model('extension/payment/wirecard');
 
-        $this->model_extension_payment_wirecard->write_log('confirm_request:' . print_r($_REQUEST, true));
+        $this->model_extension_payment_wirecard->writeLog('confirm_request:' . print_r($_REQUEST, true));
 
         $message = null;
         if (!isset($_REQUEST['opencartOrderId']) || !strlen($_REQUEST['opencartOrderId'])) {
             $message = 'order-id missing';
-            $this->model_extension_payment_wirecard->write_log($message);
+            $this->model_extension_payment_wirecard->writeLog($message);
             return WirecardCEE_QPay_ReturnFactory::generateConfirmResponseString($message);
         }
         $order_id = $_REQUEST['opencartOrderId'];
@@ -245,7 +245,7 @@ class ControllerExtensionPaymentWirecard extends Controller
             if (!$return->validate()) {
                 $message = 'Validation error: invalid response';
                 $this->model_checkout_order->addOrderHistory($order_id, $failureStatus);
-                $this->model_checkout_order->write_log($message);
+                $this->model_checkout_order->writeLog($message);
                 return WirecardCEE_QPay_ReturnFactory::generateConfirmResponseString($message);
             }
 
@@ -290,7 +290,7 @@ class ControllerExtensionPaymentWirecard extends Controller
             }
         } catch (Exception $e) {
             $this->model_checkout_order->addOrderHistory($order_id, $failureStatus);
-            $this->model_extension_payment_wirecard->write_log($e->getMessage());
+            $this->model_extension_payment_wirecard->writeLog($e->getMessage());
         }
         echo WirecardCEE_QPay_ReturnFactory::generateConfirmResponseString($message);
     }
