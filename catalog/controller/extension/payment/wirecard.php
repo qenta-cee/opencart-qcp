@@ -43,7 +43,7 @@ class ControllerExtensionPaymentWirecard extends Controller
 {
     protected $data = array();
 
-    private $pluginVersion = '1.6.0';
+    private $pluginVersion = '1.5.0';
 
     private $prefix = 'wirecard';
 
@@ -119,6 +119,13 @@ class ControllerExtensionPaymentWirecard extends Controller
             }
         }
 
+	    $financial_institution = NULL;
+	    if ($this->payment_type == WirecardCEE_QPay_PaymentType::IDL || $this->payment_type == WirecardCEE_QPay_PaymentType::EPS) {
+		    if (isset($_POST['wcp_financialinstitution'])) {
+			    $financial_institution = $_POST['wcp_financialinstitution'];
+		    }
+	    }
+
         // set Prefix
         $prefix = $this->prefix . $this->payment_type_prefix;
 
@@ -149,7 +156,7 @@ class ControllerExtensionPaymentWirecard extends Controller
         // set fields, optional, comsumer, generate fingerprint, send request, redirect
         // user
         $result = $this->model_extension_payment_wirecard->send_request($prefix, $paymentType, $order_info, $birthday,
-            $pluginVersion);
+            $pluginVersion, $financial_institution);
 
         // If connection to wirecard success set template
         if ($result) {

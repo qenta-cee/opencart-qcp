@@ -211,7 +211,7 @@ class ModelExtensionPaymentWirecard extends Model
      *
      * send payment request
      */
-    public function send_request($prefix, $paymentType, $order, $birthday, $plugin_version)
+    public function send_request($prefix, $paymentType, $order, $birthday, $plugin_version, $financialinstitution)
     {
         $fields = $this->get_config($prefix);
         try {
@@ -234,9 +234,13 @@ class ModelExtensionPaymentWirecard extends Model
             $consumerData->setUserAgent($_SERVER['HTTP_USER_AGENT'])
                 ->setIpAddress($_SERVER['REMOTE_ADDR']);
 
-            if ($birthday !== null) {
-                $consumerData->setBirthDate($birthday);
-            }
+	        if ($birthday !== NULL) {
+		        $consumerData->setBirthDate($birthday);
+	        }
+
+	        if ($financialinstitution !== NULL) {
+		        $client->setFinancialInstitution($financialinstitution);
+	        }
 
             if ($paymentType == WirecardCEE_QPay_PaymentType::MASTERPASS) {
                 $client->setShippingProfile('NO_SHIPPING');

@@ -33,8 +33,24 @@
  * terms of use. Please do not use the plugin if you do not agree to these
  * terms of use!
  */
+?>
 
-$_['text_title'] = 'eps Online-&Uuml;berweisung';
-$_['text_reason'] = 'REASON';
-$_['text_total'] = 'Shipping, Handling, Discounts & Taxes';
-$_['text_financialinstitution'] = 'Finanzinstitut';
+<form class="form-horizontal" action="<?php echo $action ?>" method="post" name="wirecard_checkout_page_send" id="payment">
+    <input type="hidden" name="wirecard_checkout_page_window_name" value="<?php echo $window_name; ?>">
+    <fieldset id="payment">
+        <legend><?php echo $text_title; ?></legend>
+        <div class="form-group required">
+            <label class="col-sm-2 control-label" for="wcp_financialinstitution"><?php echo $text_financialinstitution; ?></label>
+            <div class="col-sm-3">
+                <select name="wcp_financialinstitution" id="input-wcp-financialinstitution" class="form-control required" required="required">
+                    <?php foreach ($select_financialinstitution as $key => $value) { ?>
+                    <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+    </fieldset>
+    <div class="pull-right">
+        <input type="submit" class="btn btn-primary" id="button-confirm" value="<?php echo $button_confirm; ?>" />
+    </div>
+</form>
