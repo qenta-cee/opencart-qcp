@@ -238,6 +238,10 @@ class ModelExtensionPaymentWirecard extends Model
                 $consumerData->setBirthDate($birthday);
             }
 
+            if ($paymentType == WirecardCEE_QPay_PaymentType::MASTERPASS) {
+                $client->setShippingProfile('NO_SHIPPING');
+            }
+
             if ($fields['sendConsumerInformation'] || in_array(
                     $paymentType,
                     Array(WirecardCEE_QPay_PaymentType::INVOICE, WirecardCEE_QPay_PaymentType::INSTALLMENT)

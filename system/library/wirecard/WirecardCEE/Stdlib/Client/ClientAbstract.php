@@ -440,7 +440,7 @@ abstract class WirecardCEE_Stdlib_Client_ClientAbstract
 		return $this->_httpClient;
 	}
 
-	/**
+    /**
      * Sets shopping basket data to _requestData
      *
      * @param WirecardCEE_Stdlib_Basket $basket
