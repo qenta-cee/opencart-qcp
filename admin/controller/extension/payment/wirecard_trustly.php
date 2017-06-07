@@ -34,5 +34,12 @@
  * terms of use!
  */
 
-$_['heading_title'] = 'Wirecard Checkout Page mpass';
-$_['text_wirecard_mpass'] = '<a href="http://www.wirecard.at/" target="_blank"><img src="view/image/payment/wirecard.png" alt="Wirecard" title="Wirecard CEE" /></a>';
+// Load main controller
+$dir = dirname(__FILE__);
+require_once($dir . '/wirecard.php');
+
+class ControllerExtensionPaymentWirecardTrustly extends ControllerExtensionPaymentWirecard
+{
+    // define payment type
+    public $payment_type = '_trustly';
+}

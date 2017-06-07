@@ -34,6 +34,6 @@
  * terms of use!
  */
 
-$_['text_title'] = 'Kreditkarte ohne "verified by Visa" und "MasterCard SecureCode"';
+$_['text_title'] = 'Kreditkarte - Post / Telefonbestellung';
 $_['text_reason'] = 'REASON';
 $_['text_total'] = 'Shipping, Handling, Discounts & Taxes';

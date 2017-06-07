@@ -34,6 +34,6 @@
  * terms of use!
  */
 
-$_['text_title'] = 'Credit Card exclusive "verified by Visa" and "MasterCard SecureCode"';
+$_['text_title'] = 'Credit Card - Mail Order and Telephone Order';
 $_['text_reason'] = 'REASON';
 $_['text_total'] = 'Shipping, Handling, Discounts & Taxes';

@@ -34,12 +34,5 @@
  * terms of use!
  */
 
-// Load main controller
-$dir = dirname(__FILE__);
-require_once($dir . '/wirecard.php');
-
-class ControllerExtensionPaymentWirecardClick2Pay extends ControllerExtensionPaymentWirecard
-{
-    // define payment type
-    public $payment_type = '_click2pay';
-}
+$_['heading_title'] = 'Wirecard Checkout Page Trustly';
+$_['text_wirecard_trustly'] = '<a href="http://www.wirecard.at/" target="_blank"><img src="view/image/payment/wirecard.png" alt="Wirecard" title="Wirecard CEE" /></a>';

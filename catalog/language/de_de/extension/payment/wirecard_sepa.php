@@ -34,5 +34,6 @@
  * terms of use!
  */
 
-$_['heading_title'] = 'Wirecard Checkout Page Skrill Direct';
-$_['text_wirecard_skrilldirect'] = '<a href="http://www.wirecard.at/" target="_blank"><img src="view/image/payment/wirecard.png" alt="Wirecard" title="Wirecard CEE" /></a>';
+$_['text_title'] = 'SEPA Lastschrift';
+$_['text_reason'] = 'REASON';
+$_['text_total'] = 'Shipping, Handling, Discounts & Taxes';

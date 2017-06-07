@@ -34,5 +34,5 @@
  * terms of use!
  */
 
-$_['heading_title'] = 'Wirecard Checkout Page SOFORT Überweisung (PIN/TAN)';
+$_['heading_title'] = 'Wirecard Checkout Page SOFORT Überweisung';
 $_['text_wirecard_sofortueberweisung'] = '<a href="http://www.wirecard.at/" target="_blank"><img src="view/image/payment/wirecard.png" alt="Wirecard" title="Wirecard CEE" /></a>';

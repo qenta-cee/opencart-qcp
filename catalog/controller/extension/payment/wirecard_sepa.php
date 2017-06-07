@@ -38,8 +38,8 @@
 $dir = dirname(__FILE__);
 require_once($dir . '/wirecard.php');
 
-class ControllerExtensionPaymentWirecardInstantbank extends ControllerExtensionPaymentWirecard
+class ControllerExtensionPaymentWirecardSepa extends ControllerExtensionPaymentWirecard
 {
-    public $payment_type_prefix = '_instantbank';
-    public $payment_type = WirecardCEE_QPay_PaymentType::INSTANTBANK;
+    public $payment_type_prefix = '_sepa';
+    public $payment_type = WirecardCEE_QPay_PaymentType::SEPADD;
 }

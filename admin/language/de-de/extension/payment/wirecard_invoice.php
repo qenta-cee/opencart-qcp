@@ -34,7 +34,7 @@
  * terms of use!
  */
 
-$_['heading_title'] = 'Wirecard Checkout Page Rechnung';
+$_['heading_title'] = 'Wirecard Checkout Page Kauf auf Rechnung';
 $_['text_wirecard_invoice'] = '<a href="http://www.wirecard.at/" target="_blank"><img src="view/image/payment/wirecard.png" alt="Wirecard" title="Wirecard CEE" /></a>';
 
 $_['provider_title'] = 'Provider für Kauf auf Rechnung';

@@ -34,6 +34,12 @@
  * terms of use!
  */
 
-$_['text_title'] = 'CLICK2PAY';
-$_['text_reason'] = 'REASON';
-$_['text_total'] = 'Shipping, Handling, Discounts & Taxes';
+// Load main controller
+$dir = dirname(__FILE__);
+require_once($dir . '/wirecard.php');
+
+class ControllerExtensionPaymentWirecardSepa extends ControllerExtensionPaymentWirecard
+{
+    // define payment type
+    public $payment_type = '_sepa';
+}

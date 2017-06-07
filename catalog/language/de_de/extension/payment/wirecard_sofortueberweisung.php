@@ -34,6 +34,6 @@
  * terms of use!
  */
 
-$_['text_title'] = 'SOFORT Überweisung (PIN/TAN)';
+$_['text_title'] = 'SOFORT Überweisung';
 $_['text_reason'] = 'REASON';
 $_['text_total'] = 'Shipping, Handling, Discounts & Taxes';
