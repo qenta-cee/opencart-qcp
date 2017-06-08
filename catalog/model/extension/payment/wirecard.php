@@ -175,7 +175,6 @@ class ModelExtensionPaymentWirecard extends Model
                 ->setCity($order['shipping_city'])
                 ->setZipCode($order['shipping_postcode'])
                 ->setCountry($countryCode)
-                ->setPhone($order['telephone'])
                 ->setFax($order['fax']);
 
         } else {
@@ -297,7 +296,7 @@ class ModelExtensionPaymentWirecard extends Model
 
             if ($response->hasFailed()) {
                 $this->writeLog("Response failed! Error: {$response->getError()->getMessage()}");
-                return false;
+                return $response->getError();
             }
         } catch (Exception $e) {
             throw($e);

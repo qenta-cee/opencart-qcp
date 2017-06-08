@@ -160,6 +160,10 @@ class ControllerExtensionPaymentWirecard extends Controller
 
 	    $template = 'wirecard';
         // If connection to wirecard success set template
+	    if($result instanceof WirecardCEE_QPay_Error) {
+		    $this->session->data['error'] = $result->getMessage();
+		    $this->checkout();
+	    }
         if ($result) {
             $data['action'] = $result;
 
