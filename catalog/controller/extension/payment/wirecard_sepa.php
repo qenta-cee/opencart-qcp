@@ -34,5 +34,12 @@
  * terms of use!
  */
 
-$_['heading_title'] = 'Wirecard Checkout Page mpass';
-$_['text_wirecard_mpass'] = '<a href="http://www.wirecard.at/" target="_blank"><img src="view/image/payment/wirecard.png" alt="Wirecard" title="Wirecard CEE" /></a>';
+// Load main controller
+$dir = dirname(__FILE__);
+require_once($dir . '/wirecard.php');
+
+class ControllerExtensionPaymentWirecardSepa extends ControllerExtensionPaymentWirecard
+{
+    public $payment_type_prefix = '_sepa';
+    public $payment_type = WirecardCEE_QPay_PaymentType::SEPADD;
+}

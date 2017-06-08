@@ -37,3 +37,4 @@
 $_['text_title'] = 'iDEAL';
 $_['text_reason'] = 'REASON';
 $_['text_total'] = 'Shipping, Handling, Discounts & Taxes';
+$_['text_financialinstitution'] = 'Finanzinstitut';

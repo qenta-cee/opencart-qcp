@@ -37,4 +37,9 @@
 $_['text_title'] = 'Installment';
 $_['text_reason'] = 'REASON';
 $_['text_total'] = 'Shipping, Handling, Discounts & Taxes';
-$_['text_installment_info'] = 'Additional Information';
+$_['text_birthday'] = 'Birthday';
+$_['text_birthday_information'] = 'You must be at least 18 years of age to use this payment method.';
+$_['text_payolution_title'] = 'Payolution Terms';
+$_['text_payolution_consent1'] = 'I agree that the data which are necessary for the liquidation of purchase on account and which are used to complete the identy and credit check are transmitted to payolution. My ';
+$_['text_payolution_consent2'] = ' can be revoked at any time with effect for the future.';
+$_['text_payolution_link'] = 'consent';

@@ -43,7 +43,7 @@ class ControllerExtensionPaymentWirecard extends Controller
 {
     protected $data = array();
 
-    private $pluginVersion = '1.4.1';
+    private $pluginVersion = '1.5.0';
 
     private $prefix = 'wirecard';
 
@@ -75,15 +75,6 @@ class ControllerExtensionPaymentWirecard extends Controller
 
         // Set Template
 	    $template = 'wirecard_init';
-        if ($this->payment_type == WirecardCEE_QPay_PaymentType::INSTALLMENT) {
-            $template = 'wirecard_installment';
-            $data['txt_info'] = $this->language->get('text_installment_info');
-            $data['txt_birthday'] = $this->language->get('text_birthday');
-        } elseif ($this->payment_type == WirecardCEE_QPay_PaymentType::INVOICE) {
-            $template = 'wirecard_invoice';
-            $data['txt_info'] = $this->language->get('text_invoice_info');
-            $data['txt_birthday'] = $this->language->get('text_birthday');
-        }
 
         $data['send_order'] = $this->language->get('send_order');
         $data['error_init'] = $this->language->get('error_init');
@@ -128,6 +119,13 @@ class ControllerExtensionPaymentWirecard extends Controller
             }
         }
 
+	    $financial_institution = NULL;
+	    if ($this->payment_type == WirecardCEE_QPay_PaymentType::IDL || $this->payment_type == WirecardCEE_QPay_PaymentType::EPS) {
+		    if (isset($_POST['wcp_financialinstitution'])) {
+			    $financial_institution = $_POST['wcp_financialinstitution'];
+		    }
+	    }
+
         // set Prefix
         $prefix = $this->prefix . $this->payment_type_prefix;
 
@@ -157,10 +155,15 @@ class ControllerExtensionPaymentWirecard extends Controller
 
         // set fields, optional, comsumer, generate fingerprint, send request, redirect
         // user
-        $result = $this->model_extension_payment_wirecard->send_request($prefix, $paymentType, $order_info, $birthday,
-            $pluginVersion);
+        $result = $this->model_extension_payment_wirecard->sendRequest($prefix, $paymentType, $order_info, $birthday,
+            $pluginVersion, $financial_institution);
 
+	    $template = 'wirecard';
         // If connection to wirecard success set template
+	    if($result instanceof WirecardCEE_QPay_Error) {
+		    $this->session->data['error'] = $result->getMessage();
+		    $this->checkout();
+	    }
         if ($result) {
             $data['action'] = $result;
 
@@ -206,12 +209,12 @@ class ControllerExtensionPaymentWirecard extends Controller
         $this->load->model('checkout/order');
         $this->load->model('extension/payment/wirecard');
 
-        $this->model_extension_payment_wirecard->write_log('confirm_request:' . print_r($_REQUEST, true));
+        $this->model_extension_payment_wirecard->writeLog('confirm_request:' . print_r($_REQUEST, true));
 
         $message = null;
         if (!isset($_REQUEST['opencartOrderId']) || !strlen($_REQUEST['opencartOrderId'])) {
             $message = 'order-id missing';
-            $this->model_extension_payment_wirecard->write_log($message);
+            $this->model_extension_payment_wirecard->writeLog($message);
             return WirecardCEE_QPay_ReturnFactory::generateConfirmResponseString($message);
         }
         $order_id = $_REQUEST['opencartOrderId'];
@@ -247,7 +250,7 @@ class ControllerExtensionPaymentWirecard extends Controller
             if (!$return->validate()) {
                 $message = 'Validation error: invalid response';
                 $this->model_checkout_order->addOrderHistory($order_id, $failureStatus);
-                $this->model_checkout_order->write_log($message);
+                $this->model_checkout_order->writeLog($message);
                 return WirecardCEE_QPay_ReturnFactory::generateConfirmResponseString($message);
             }
 
@@ -292,7 +295,7 @@ class ControllerExtensionPaymentWirecard extends Controller
             }
         } catch (Exception $e) {
             $this->model_checkout_order->addOrderHistory($order_id, $failureStatus);
-            $this->model_extension_payment_wirecard->write_log($e->getMessage());
+            $this->model_extension_payment_wirecard->writeLog($e->getMessage());
         }
         echo WirecardCEE_QPay_ReturnFactory::generateConfirmResponseString($message);
     }

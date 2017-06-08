@@ -34,11 +34,6 @@
  * terms of use!
  */
 
-// Load main controller
-$dir = dirname(__FILE__);
-require_once($dir . '/wirecard.php');
-
-class ModelExtensionPaymentWirecardElv extends ModelExtensionPaymentWirecard
-{
-    public $payment_type = '_elv';
-}
+$_['text_title'] = 'Trustly';
+$_['text_reason'] = 'REASON';
+$_['text_total'] = 'Shipping, Handling, Discounts & Taxes';

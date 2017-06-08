@@ -34,5 +34,12 @@
  * terms of use!
  */
 
-$_['heading_title'] = 'Wirecard Checkout Page CLICK2PAY';
-$_['text_wirecard_click2pay'] = '<a href="http://www.wirecard.at/" target="_blank"><img src="view/image/payment/wirecard.png" alt="Wirecard" title="Wirecard CEE" /></a>';
+// Load main controller
+$dir = dirname(__FILE__);
+require_once($dir . '/wirecard.php');
+
+class ControllerExtensionPaymentWirecardTrustly extends ControllerExtensionPaymentWirecard
+{
+    public $payment_type_prefix = '_trustly';
+    public $payment_type = WirecardCEE_QPay_PaymentType::TRUSTLY;
+}

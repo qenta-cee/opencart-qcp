@@ -61,7 +61,8 @@ class ControllerExtensionPaymentWirecard extends Controller
         'confirmMail' => 'input',
         'customerStatement' => 'textarea',
         'iframe' => 'true_false',
-        'consumerInformation' => 'true_false'
+        'consumerInformation' => 'true_false',
+        'basketData' => 'true_false',
     );
 
     // define mandatory input fields, by false no error occur
@@ -119,6 +120,9 @@ class ControllerExtensionPaymentWirecard extends Controller
         $data['arrayLanguageText']['no'] = $this->language->get('no');
         $data['arrayLanguageText']['yes'] = $this->language->get('yes');
         $data['arrayLanguageText']['license_text'] = $this->language->get('license_text');
+	    $data['arrayLanguageText']['payolution'] = $this->language->get('payolution');
+	    $data['arrayLanguageText']['wirecard'] = $this->language->get('wirecard');
+	    $data['arrayLanguageText']['ratepay'] = $this->language->get('ratepay');
 
         //define input fields
         $data['inputfields'] = $this->arrayInputFields;
@@ -181,6 +185,10 @@ class ControllerExtensionPaymentWirecard extends Controller
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
+        $this->load->model('localisation/country');
+        $data['countries'] = $this->model_localisation_country->getCountries();
+        $this->load->model('localisation/currency');
+        $data['currencies'] = $this->model_localisation_currency->getCurrencies();
 
         $this->response->setOutput($this->load->view('extension/payment/wirecard', $data));
     }

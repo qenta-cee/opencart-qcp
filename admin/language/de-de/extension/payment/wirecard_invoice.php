@@ -34,5 +34,20 @@
  * terms of use!
  */
 
-$_['heading_title'] = 'Wirecard Checkout Page Rechnung';
+$_['heading_title'] = 'Wirecard Checkout Page Kauf auf Rechnung';
 $_['text_wirecard_invoice'] = '<a href="http://www.wirecard.at/" target="_blank"><img src="view/image/payment/wirecard.png" alt="Wirecard" title="Wirecard CEE" /></a>';
+
+$_['provider_title'] = 'Provider für Kauf auf Rechnung';
+$_['provider_descript'] = 'Wählen Sie Ihren Kauf auf Rechnung Provider aus';
+
+$_['country_title'] = 'Erlaubte Länder';
+$_['country_descript'] = 'Wählen Sie die erlaubten Länder für Kauf auf Rechnung aus';
+
+$_['currency_title'] = 'Akzeptierte Währungen';
+$_['currency_descript'] = 'Wählen Sie die akzeptierten Währungen für Kauf auf Rechnung aus';
+
+$_['mId_title'] = 'Payolution mID';
+$_['mId_descript'] = 'payolution-Händler-ID, Nicht base64 kodiert.';
+
+$_['terms_title'] = 'Payolution Nutzungsbedingungen';
+$_['terms_descript'] = 'Kunden müssen die Nutzungsbedingungen von payolution während des Bezahlprozesses akzeptieren.';

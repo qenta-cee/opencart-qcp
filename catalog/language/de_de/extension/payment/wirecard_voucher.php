@@ -34,6 +34,6 @@
  * terms of use!
  */
 
-$_['text_title'] = 'Voucher';
+$_['text_title'] = 'Gutschein';
 $_['text_reason'] = 'REASON';
 $_['text_total'] = 'Shipping, Handling, Discounts & Taxes';

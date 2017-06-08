@@ -34,6 +34,12 @@
  * terms of use!
  */
 
-$_['text_title'] = 'Skrill Direct';
-$_['text_reason'] = 'REASON';
-$_['text_total'] = 'Shipping, Handling, Discounts & Taxes';
+// Load main controller
+$dir = dirname(__FILE__);
+require_once($dir . '/wirecard.php');
+
+class ControllerExtensionPaymentWirecardTrustly extends ControllerExtensionPaymentWirecard
+{
+    // define payment type
+    public $payment_type = '_trustly';
+}

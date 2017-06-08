@@ -34,12 +34,5 @@
  * terms of use!
  */
 
-// Load main controller
-$dir = dirname(__FILE__);
-require_once($dir . '/wirecard.php');
-
-class ControllerExtensionPaymentWirecardInstantbank extends ControllerExtensionPaymentWirecard
-{
-    public $payment_type_prefix = '_instantbank';
-    public $payment_type = WirecardCEE_QPay_PaymentType::INSTANTBANK;
-}
+$_['heading_title'] = 'Wirecard Checkout Page Masterpass';
+$_['text_wirecard_masterpass'] = '<a href="http://www.wirecard.at/" target="_blank"><img src="view/image/payment/wirecard.png" alt="Wirecard" title="Wirecard CEE" /></a>';

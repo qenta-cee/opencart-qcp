@@ -175,6 +175,94 @@
 		</div>
 	</div>
 	<?php endif; ?>
+
+	<?php if($fieldtype == 'select_provider'): ?>
+	<div class="form-group <?php if (array_key_exists($fieldname, $arrayInputFieldsMandatory)) echo " required
+	";?>">
+	<label class="col-sm-2 control-label"
+		   for="select-<?php echo $prefix.$fieldname;?>">
+                           <span title=""
+								 data-toggle="tooltip"
+								 data-original-title="<?php echo $arrayLanguageText[$fieldname . '_descript']; ?>">
+                                        <?php echo $arrayLanguageText[$fieldname . '_title']; ?>
+                            </span>
+	</label>
+	<div class="col-sm-10">
+		<select class="form-control"
+				id="select-<?php echo $prefix.$fieldname;?>"
+				name="<?php echo $prefix.$fieldname;?>">
+			<?php if ($input[$prefix.$fieldname] == 'payolution') :?><option value="payolution" selected="selected"><?php else: ?><option value="payolution"><?php endif; ?><?php echo $arrayLanguageText['payolution']; ?></option>
+			<?php if ($prefix.$fieldname == 'wirecard_invoice_provider' ): ?>
+				<?php if ($input[$prefix.$fieldname] == 'wirecard') :?>
+					<option value="wirecard" selected="selected">
+				<?php else: ?>
+					<option value="wirecard">
+				<?php endif; ?>
+			<?php echo $arrayLanguageText['wirecard']; ?>
+			</option>
+			<?php endif; ?>
+			<?php if ($input[$prefix.$fieldname] == 'ratepay') :?><option value="ratepay" selected="selected">
+				<?php else: ?><option value="ratepay">
+				<?php endif; ?><?php echo $arrayLanguageText['ratepay']; ?></option>
+		</select>
+	</div>
+</div>
+<?php endif; ?>
+
+<?php if($fieldtype == 'select_country'): ?>
+<div class="form-group <?php if (array_key_exists($fieldname, $arrayInputFieldsMandatory)) echo " required ";?>">
+<label class="col-sm-2 control-label"
+	   for="select-<?php echo $prefix.$fieldname;?>">
+                           <span title=""
+								 data-toggle="tooltip"
+								 data-original-title="<?php echo $arrayLanguageText[$fieldname . '_descript']; ?>">
+                                        <?php echo $arrayLanguageText[$fieldname . '_title']; ?>
+                            </span>
+</label>
+<div class="col-sm-10">
+	<select multiple class="form-control"
+			id="select-<?php echo $prefix.$fieldname;?>"
+			name="<?php echo $prefix.$fieldname;?>[]">
+		<?php foreach ($countries as $country) { ?>
+		<?php if (isset($input[$prefix.$fieldname]) && in_array($country['country_id'], $input[$prefix.$fieldname])) { ?>
+		<option value="<?php echo $country['country_id']; ?>"
+				selected="selected"><?php echo $country['name']; ?></option>
+		<?php } else { ?>
+		<option value="<?php echo $country['country_id']; ?>"><?php echo $country['name']; ?></option>
+		<?php } ?>
+		<?php } ?>
+	</select>
+</div>
+</div>
+<?php endif; ?>
+
+<?php if($fieldtype == 'select_currency'): ?>
+<div class="form-group <?php if (array_key_exists($fieldname, $arrayInputFieldsMandatory)) echo " required ";?>">
+<label class="col-sm-2 control-label"
+	   for="select-<?php echo $prefix.$fieldname;?>">
+                           <span title=""
+								 data-toggle="tooltip"
+								 data-original-title="<?php echo $arrayLanguageText[$fieldname . '_descript']; ?>">
+                                        <?php echo $arrayLanguageText[$fieldname . '_title']; ?>
+                            </span>
+</label>
+<div class="col-sm-10">
+	<select multiple class="form-control"
+			id="select-<?php echo $prefix.$fieldname;?>"
+			name="<?php echo $prefix.$fieldname;?>[]">
+		<?php foreach ($currencies as $currency) { ?>
+		<?php if (isset($input[$prefix.$fieldname]) && in_array($currency['code'], $input[$prefix.$fieldname])) { ?>
+		<option value="<?php echo $currency['code']; ?>"
+				selected="selected"><?php echo $currency['code']; ?></option>
+		<?php } else { ?>
+		<option value="<?php echo $currency['code']; ?>"><?php echo $currency['code']; ?></option>
+		<?php } ?>
+		<?php } ?>
+	</select>
+</div>
+</div>
+<?php endif; ?>
+
 	<?php if($fieldtype == 'status_code'): ?>
 	<div class="form-group <?php if (array_key_exists($fieldname, $arrayInputFieldsMandatory)) echo " required
 	";?>">

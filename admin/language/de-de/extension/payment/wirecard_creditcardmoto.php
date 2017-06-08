@@ -34,5 +34,5 @@
  * terms of use!
  */
 
-$_['heading_title'] = 'Wirecard Checkout Page Kreditkarte Mobil-, Tele-Order';
+$_['heading_title'] = 'Wirecard Checkout Page Kreditkarte - Post / Telefonbestellung';
 $_['text_wirecard_creditcardmoto'] = '<a href="http://www.wirecard.at/" target="_blank"><img src="view/image/payment/wirecard.png" alt="Wirecard" title="Wirecard CEE" /></a>';

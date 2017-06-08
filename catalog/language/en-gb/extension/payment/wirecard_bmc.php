@@ -34,6 +34,6 @@
  * terms of use!
  */
 
-$_['text_title'] = 'Bancontact/Mister Cash';
+$_['text_title'] = 'Bancontact';
 $_['text_reason'] = 'REASON';
 $_['text_total'] = 'Shipping, Handling, Discounts & Taxes';

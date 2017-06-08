@@ -77,20 +77,25 @@ class ModelExtensionPaymentWirecardInstallment extends ModelExtensionPaymentWire
             }
         }
 
-        $total = $this->currency->format($total, '', '', false);
-        if ($this->currency->getCode() != 'EUR') {
-            return false;
-        }
 
-        $fieldValue = $this->config->get($this->prefix . $this->payment_type . '_minAmount');
-        if (!empty($fieldValue) and $total < $fieldValue) {
-            return false;
-        }
+	    $min_amount = $this->config->get($this->prefix.$this->payment_type.'_minAmount');
+	    if ( ! empty($min_amount) && $total < $min_amount) {
+		    return FALSE;
+	    }
 
-        $fieldValue = $this->config->get($this->prefix . $this->payment_type . '_maxAmount');
-        if (!empty($fieldValue) and $total > $fieldValue) {
-            return false;
-        }
+	    $max_amount = $this->config->get($this->prefix.$this->payment_type.'_maxAmount');
+	    if ( ! empty($max_amount) && $total > $max_amount) {
+		    return FALSE;
+	    }
+
+	    $currencies = $this->config->get($this->prefix.$this->payment_type.'_currency');
+	    if ( ! empty($currencies) && ! in_array($this->session->data['currency'], $currencies)) {
+		    return FALSE;
+	    }
+	    $country_ids = $this->config->get($this->prefix.$this->payment_type.'_country');
+	    if ( ! empty($country_ids) && ! in_array($this->session->data['payment_address']['country_id'], $country_ids)) {
+		    return FALSE;
+	    }
 
         return parent::getMethod($address, $total);
     }

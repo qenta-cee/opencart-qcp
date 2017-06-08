@@ -37,11 +37,11 @@ return Array(
     'MODULE_NAME'    => 'WirecardCEE_QPay',
     'MODULE_VERSION' => '3.3.0',
     'DEPENDENCIES' => Array(
-        'FRAMEWORK_NAME' => 'Zend_Framework',
-        'FRAMEWORK_VERSION' => Array(
-            'MINIMUM' => '1.11.10',
-            'CURRENT' => Zend_Version::VERSION
-        ),
+	    'FRAMEWORK_NAME' => 'Zend_Framework',
+	    'FRAMEWORK_VERSION' => Array(
+		    'MINIMUM' => '1.11.10',
+		    'CURRENT' => Zend_Version::VERSION
+	    ),
     ),
     'USE_DEBUG'      => false
 );

@@ -38,7 +38,8 @@
 $dir = dirname(__FILE__);
 require_once($dir . '/wirecard.php');
 
-class ModelExtensionPaymentWirecardClick2Pay extends ModelExtensionPaymentWirecard
+class ControllerExtensionPaymentWirecardMasterpass extends ControllerExtensionPaymentWirecard
 {
-    public $payment_type = '_click2pay';
+    // define payment type
+    public $payment_type = '_masterpass';
 }

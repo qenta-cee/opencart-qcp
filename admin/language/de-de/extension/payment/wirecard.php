@@ -85,49 +85,56 @@ $_['backgroundColor_title'] = 'Hintergrundfarbe';
 $_['displayText_title'] = 'Display Text';
 
 // Field Descriptions
-$_['enable_desc'] = 'Plugin aktivieren?';
-$_['customerId_desc'] = 'Die "Customer ID" die Sie von Wirecard erhalten haben';
-$_['serviceUrl_desc'] = 'Service Url, für gewöhnlich der Link zum Impressum';
-$_['secret_desc'] = 'Der "Secrect" den Sie von Wirecard erhalten haben';
-$_['currency_desc'] = 'W&auml;hrung der Bezahlseite';
-$_['language_desc'] = 'Sprache der Bezahlseite';
-$_['imageURL_desc'] = 'Stellen Sie Ihr Logo auf der Bezahlseite dar';
-$_['minAmount_desc'] = 'Min. Betrag';
-$_['maxAmount_desc'] = 'Max. Betrag';
+$_['enable_descript'] = 'Plugin aktivieren?';
+$_['customerId_descript'] = 'Die "Customer ID" die Sie von Wirecard erhalten haben';
+$_['serviceUrl_descript'] = 'Service Url, für gewöhnlich der Link zum Impressum';
+$_['secret_descript'] = 'Der "Secrect" den Sie von Wirecard erhalten haben';
+$_['currency_descript'] = 'W&auml;hrung der Bezahlseite';
+$_['language_descript'] = 'Sprache der Bezahlseite';
+$_['imageURL_descript'] = 'Stellen Sie Ihr Logo auf der Bezahlseite dar';
+$_['minAmount_descript'] = 'Min. Betrag';
+$_['maxAmount_descript'] = 'Max. Betrag';
 
 $_['success_status_desc'] = 'Status f&uuml;r erfolgreiche Bezahlung';
 $_['pending_status_desc'] = 'Status f&uuml;r ausstehende Bezahlung';
 $_['failure_status_desc'] = 'Status f&uuml;r fehlgeschlagene Bezahlung';
 $_['cancel_status_desc'] = 'Status f&uuml;r abgebrochene Bezahlung';
 
-$_['shopId_desc'] = 'Die “Shop ID“ die Sie von Wirecard erhalten haben';
-$_['backgroundColor_desc'] = 'Hintergrundfarbe f&uuml;r die Bezahlseite';
-$_['displayText_desc'] = 'Text der auf der Bezahlseite angezeigt werden soll';
+$_['shopId_descript'] = 'Die “Shop ID“ die Sie von Wirecard erhalten haben';
+$_['backgroundColor_descript'] = 'Hintergrundfarbe f&uuml;r die Bezahlseite';
+$_['displayText_descript'] = 'Text der auf der Bezahlseite angezeigt werden soll';
 
 $_['autoDeposit_title'] = 'Auto Abbuchung';
-$_['autoDeposit_desc'] = 'Ist diese Option auf "aktiv" gesetzt so wird nach erfolgreicher Bezahlung die Buchung sofort durchgeführt';
+$_['autoDeposit_descript'] = 'Ist diese Option auf "aktiv" gesetzt so wird nach erfolgreicher Bezahlung die Buchung sofort durchgeführt';
 
 $_['duplicateRequestCheck _title'] = 'Doppelte Anfrage prüfen';
-$_['duplicateRequestCheck _desc'] = 'Dieser Parameter verhindert, dass versehentlich unbeabsichtigte Mehrfachzahlungen durch Ihre Kunden ausgelöst werden';
+$_['duplicateRequestCheck _descript'] = 'Dieser Parameter verhindert, dass versehentlich unbeabsichtigte Mehrfachzahlungen durch Ihre Kunden ausgelöst werden';
 
 
 $_['maxRetries_title'] = 'Max. Zahlungsversuche';
-$_['maxRetries_desc'] = 'Der Parameter gibt die maximale Anzahl der Zahlungsversuche an';
+$_['maxRetries_descript'] = 'Der Parameter gibt die maximale Anzahl der Zahlungsversuche an';
 
 $_['confirmMail_title'] = 'Bestätigungs E-Mail Adresse';
-$_['confirmMail_desc'] = 'Wenn Sie diesen Parameter verwenden, erhalten Sie ein E-Mail, das alle
+$_['confirmMail_descript'] = 'Wenn Sie diesen Parameter verwenden, erhalten Sie ein E-Mail, das alle
 Informationen zur Zahlung wie etwa Auftragsnummer, Zahlungsmittel, Zahlungsbetrag
 enthält.';
 
 $_['customerStatement_title'] = 'Kunden Statement';
-$_['customerStatement_desc'] = 'Dieser Text erscheint auf der Abrechnung des Kunden';
+$_['customerStatement_descript'] = 'Dieser Text erscheint auf der Abrechnung des Kunden';
 
 $_['iframe_title'] = 'iFrame';
 $_['iframe_desc'] = 'Soll die Bezahlseite in einem Iframe angezeigt werden?';
 
-$_['consumerInformation_title'] = 'Konsumenten Informationen mit senden?';
-$_['consumerInformation_desc'] = '';
+$_['consumerInformation_title'] = 'Verrechnungsdaten des Konsumenten mitsenden';
+$_['consumerInformation_descript'] = 'Weiterleitung der Rechnungs- und Versanddaten des Kunden an den Finanzdienstleister.';
 
 $_['no'] = 'Inaktiv';
 $_['yes'] = 'Aktiv';
-?>
+
+$_['basketData_title'] = 'Warenkorbdaten des Konsumenten mitsenden';
+$_['basketData_descript'] = 'Weiterletung des Warenkorbs des Kunden an den Finanzdienstleister';
+
+$_['payolution'] = 'payolution';
+$_['wirecard'] = 'Wirecard';
+$_['ratepay'] = 'RatePay';
+

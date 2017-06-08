@@ -34,6 +34,6 @@
  * terms of use!
  */
 
-$_['text_title'] = 'mpass';
+$_['text_title'] = 'Masterpass';
 $_['text_reason'] = 'REASON';
 $_['text_total'] = 'Shipping, Handling, Discounts & Taxes';

@@ -36,3 +36,18 @@
 
 $_['heading_title'] = 'Wirecard Checkout Page Invoice';
 $_['text_wirecard_invoice'] = '<a href="http://www.wirecard.at/" target="_blank"><img src="view/image/payment/wirecard.png" alt="Wirecard" title="Wirecard CEE" /></a>';
+
+$_['provider_title'] = 'Invoice Provider';
+$_['provider_descript'] = 'Select your invoice provider';
+
+$_['country_title'] = 'Allowed countries';
+$_['country_descript'] = 'Select allowed countries for invoice';
+
+$_['currency_title'] = 'Accepted currencies';
+$_['currency_descript'] = 'Select accepted currencies for invoice';
+
+$_['mId_title'] = 'Payolution mID';
+$_['mId_descript'] = 'Your payolution merchant ID, non-base64-encoded.';
+
+$_['terms_title'] = 'Payolution terms';
+$_['terms_descript'] = 'Consumer must accept payolution terms during the checkout process.';

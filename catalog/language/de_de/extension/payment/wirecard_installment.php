@@ -34,7 +34,12 @@
  * terms of use!
  */
 
-$_['text_title'] = 'Ratenzahlung';
+$_['text_title'] = 'Kauf auf Raten';
 $_['text_reason'] = 'REASON';
 $_['text_total'] = 'Shipping, Handling, Discounts & Taxes';
-$_['text_installment_info'] = 'Zusatzinformationen f&uuml;r Ratenzahlung';
+$_['text_birthday'] = 'Geburtsdatum';
+$_['text_birthday_information'] = 'Sie müssen mindestens 18 Jahre alt sein, um dieses Zahlungsmittel nutzen zu können.';
+$_['text_payolution_title'] = 'Payolution Nutzungsbedingungen';
+$_['text_payolution_consent1'] = 'Mit der Übermittlung jener Daten an payolution, die für die Abwicklung von Zahlungen mit Kauf auf Rechnung und die Identitäts- und Bonitätsprüfung erforderlich sind, bin ich einverstanden. Meine ';
+$_['text_payolution_consent2'] = ' kann ich jederzeit mit Wirkung für die Zukunft widerrufen.';
+$_['text_payolution_link'] = 'Bewilligung';

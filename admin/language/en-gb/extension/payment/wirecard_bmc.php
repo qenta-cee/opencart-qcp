@@ -34,5 +34,5 @@
  * terms of use!
  */
 
-$_['heading_title'] = 'Wirecard Checkout Page Bancontact/Mister Cash';
+$_['heading_title'] = 'Wirecard Checkout Page Bancontact';
 $_['text_wirecard_bmc'] = '<a href="http://www.wirecard.at/" target="_blank"><img src="view/image/payment/wirecard.png" alt="Wirecard" title="Wirecard CEE" /></a>';

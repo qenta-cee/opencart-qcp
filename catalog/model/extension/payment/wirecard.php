@@ -101,7 +101,7 @@ class ModelExtensionPaymentWirecard extends Model
      * @param $prefix
      * @return mixed
      */
-    public function get_config($prefix)
+    public function getConfig($prefix)
     {
         // set defined fields
         foreach ($this->fields as $field) {
@@ -128,6 +128,7 @@ class ModelExtensionPaymentWirecard extends Model
         }
 
         $data['sendConsumerInformation'] = $this->config->get($prefix . '_consumerInformation') == '1';
+        $data['sendBasketData'] = $this->config->get($prefix . '_basketData') == '1';
 
         return $data;
     }
@@ -138,7 +139,7 @@ class ModelExtensionPaymentWirecard extends Model
      *
      * set consumerdata
      */
-    public function set_consumer_information($order, WirecardCEE_Stdlib_ConsumerData $consumer_data)
+    public function setConsumerInformation($order, WirecardCEE_Stdlib_ConsumerData $consumer_data)
     {
 
         $consumer_data->setEmail($order['email']);
@@ -174,7 +175,6 @@ class ModelExtensionPaymentWirecard extends Model
                 ->setCity($order['shipping_city'])
                 ->setZipCode($order['shipping_postcode'])
                 ->setCountry($countryCode)
-                ->setPhone($order['telephone'])
                 ->setFax($order['fax']);
 
         } else {
@@ -210,9 +210,9 @@ class ModelExtensionPaymentWirecard extends Model
      *
      * send payment request
      */
-    public function send_request($prefix, $paymentType, $order, $birthday, $plugin_version)
+    public function sendRequest($prefix, $paymentType, $order, $birthday, $plugin_version, $financialinstitution)
     {
-        $fields = $this->get_config($prefix);
+        $fields = $this->getConfig($prefix);
         try {
             $language_info = $order['language_code'];
             //languagecode is like 'en-gb' but should be 'en'
@@ -233,8 +233,16 @@ class ModelExtensionPaymentWirecard extends Model
             $consumerData->setUserAgent($_SERVER['HTTP_USER_AGENT'])
                 ->setIpAddress($_SERVER['REMOTE_ADDR']);
 
-            if ($birthday !== null) {
-                $consumerData->setBirthDate($birthday);
+	        if ($birthday !== NULL) {
+		        $consumerData->setBirthDate($birthday);
+	        }
+
+	        if ($financialinstitution !== NULL) {
+		        $client->setFinancialInstitution($financialinstitution);
+	        }
+
+            if ($paymentType == WirecardCEE_QPay_PaymentType::MASTERPASS) {
+                $client->setShippingProfile('NO_SHIPPING');
             }
 
             if ($fields['sendConsumerInformation'] || in_array(
@@ -242,10 +250,10 @@ class ModelExtensionPaymentWirecard extends Model
                     Array(WirecardCEE_QPay_PaymentType::INVOICE, WirecardCEE_QPay_PaymentType::INSTALLMENT)
                 )
             ) {
-                $this->set_consumer_information($order, $consumerData);
+                $this->setConsumerInformation($order, $consumerData);
             }
 
-            $strCustomerLayout = $this->get_customer_layout();
+            $strCustomerLayout = $this->getCustomerLayout();
 
             $client
                 ->setAmount(
@@ -253,7 +261,7 @@ class ModelExtensionPaymentWirecard extends Model
                 )
                 ->setCurrency($order['currency_code'])
                 ->setPaymentType($paymentType)
-                ->setOrderDescription($this->get_order_description($order))
+                ->setOrderDescription($this->getOrderDescription($order))
                 ->setPluginVersion($plugin_version)
                 ->setSuccessUrl($this->url->link('extension/payment/' . $prefix . '/success', null, 'SSL'))
                 ->setPendingUrl($this->url->link('extension/payment/' . $prefix . '/success', null, 'SSL'))
@@ -265,22 +273,30 @@ class ModelExtensionPaymentWirecard extends Model
                 ->setConsumerData($consumerData)
                 ->createConsumerMerchantCrmId($order['email'])
                 ->setDisplayText($fields['displayText'])
-                ->setCustomerStatement($this->get_customer_statement($order))
+                ->setCustomerStatement($this->getCustomerStatement($order, $paymentType, $prefix))
                 ->setDuplicateRequestCheck(false)
                 ->setMaxRetries($fields['maxRetries'])
                 ->setAutoDeposit($fields['autoDeposit'])
                 ->setWindowName($this->get_window_name())
-                ->setCustomerLayout($strCustomerLayout);
+	            ->setOrderReference($this->getOrderReference($order))
+                ->setLayout($strCustomerLayout);
+
+	        if ($fields['sendBasketData'] ||
+		        ($paymentType == WirecardCEE_QPay_PaymentType::INVOICE && $this->config->get($prefix.'_provider') != 'payolution') ||
+		        ($paymentType == WirecardCEE_QPay_PaymentType::INSTALLMENT && $this->config->get($prefix.'_provider') != 'payolution')
+	        ) {
+		        $client->setBasket($this->setBasketData());
+	        }
 
             $client->opencartOrderId = $order['order_id'];
 
-            $this->write_log(__METHOD__ . "\n" . print_r($client->getRequestData(), true));
+            $this->writeLog(__METHOD__ . "\n" . print_r($client->getRequestData(), true));
 
             $response = $client->initiate();
 
             if ($response->hasFailed()) {
-                $this->write_log("Response failed! Error: {$response->getError()->getMessage()}");
-                return false;
+                $this->writeLog("Response failed! Error: {$response->getError()->getMessage()}");
+                return $response->getError();
             }
         } catch (Exception $e) {
             throw($e);
@@ -289,12 +305,68 @@ class ModelExtensionPaymentWirecard extends Model
         return $response->getRedirectUrl();
     }
 
+	/**
+	 * Create basket items including shipping and fix taxes
+	 *
+	 * @return WirecardCEE_Stdlib_Basket
+	 */
+	public function setBasketData() {
+		$basket        = new WirecardCEE_Stdlib_Basket();
+		$basketContent = $this->cart;
+
+		$fix_tax = 0;
+		foreach ($basketContent->getProducts() as $cart_item_key => $cart_item) {
+			$item         = new WirecardCEE_Stdlib_Basket_Item($cart_item['product_id']);
+			$gross_amount = $this->tax->calculate($cart_item['price'], $cart_item['tax_class_id'], 'P');
+			$tax_amount   = $gross_amount - $cart_item['price'];
+			$item->setUnitGrossAmount(number_format($gross_amount, 2))
+				->setUnitNetAmount(number_format($cart_item['price'], 2))
+				->setUnitTaxAmount(number_format($tax_amount, 2))
+				->setUnitTaxRate($tax_amount / $cart_item['price'] * 100)
+				->setDescription(substr(utf8_decode($cart_item['name']), 0, 127))
+				->setName(substr(utf8_decode($cart_item['name']), 0, 127))
+				->setImageUrl($this->url->link($cart_item['image']));
+
+			$basket->addItem($item, $cart_item['quantity']);
+			$fix_tax += $this->tax->calculate($cart_item['price'], $cart_item['tax_class_id'], 'F') - $cart_item['price'];
+		}
+		//Add shipping to basket
+		if (isset($this->session->data['shipping_method'])) {
+			$session_data    = $this->session->data;
+			$shipping_method = $session_data['shipping_method'];
+			$item            = new WirecardCEE_Stdlib_Basket_Item('shipping');
+			$item->setUnitGrossAmount(number_format($this->tax->calculate($shipping_method['cost'], $shipping_method['tax_class_id'], 'P'), 2))
+				->setUnitNetAmount(number_format($shipping_method['cost'], 2))
+				->setUnitTaxRate($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']) / $shipping_method['cost'] * 100)
+				->setUnitTaxAmount(number_format($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']), 2))
+				->setName('Shipping')
+				->setDescription('Shipping');
+			$basket->addItem($item);
+			$fix_tax += $this->tax->calculate($shipping_method['cost'], $shipping_method['tax_class_id'], 'F') - $shipping_method['cost'];
+		}
+
+		// Add fix tax as basket item
+		if ($fix_tax > 0) {
+			$item = new WirecardCEE_Stdlib_Basket_Item('FixTax');
+			$item->setUnitGrossAmount(number_format($fix_tax, 2))
+				->setUnitNetAmount(number_format($fix_tax, 2))
+				->setUnitTaxAmount(number_format(0, 2))
+				->setUnitTaxRate(0)
+				->setDescription('FixTax')
+				->setName('FixTax');
+
+			$basket->addItem($item, 1);
+		}
+
+		return $basket;
+	}
+
     /**
      * @param $message
      *
      * write to logfile
      */
-    public function write_log($message)
+    public function writeLog($message)
     {
         $date = date("Y-m-d");
         $log_path = DIR_SYSTEM . 'storage/logs/';
@@ -316,24 +388,44 @@ class ModelExtensionPaymentWirecard extends Model
      * @param $order
      * @return string
      */
-    protected function get_order_description($order)
+    protected function getOrderDescription($order)
     {
-        return sprintf('user_id:%s order_id:%s', $order['customer_id'], $order['order_id']);
+	    return sprintf('%s %s %s',
+		    $order['email'],
+		    $order['payment_firstname'],
+		    $order['payment_lastname']
+	    );
     }
 
     /**
      * @param $order
      * @return string
      */
-    protected function get_customer_statement($order)
+    protected function getCustomerStatement($order, $payment_type, $prefix)
     {
-        return sprintf('%s #%06s', $order['store_name'], $order['order_id']);
+    	if(strlen($this->config->get($prefix.'_customerStatement'))) {
+    		return $this->config->get($prefix.'_customerStatement');
+	    }
+        $customer_statement = sprintf('%9s', substr($order['store_name'], 0, 9));
+	    if ($payment_type != WirecardCEE_QPay_PaymentType::POLI) {
+		    $customer_statement .= ' ' . $this->getOrderReference($order);
+	    }
+	    return $customer_statement;
     }
 
+	/**
+	 * @param $order
+	 *
+	 * @return string
+	 */
+    protected function getOrderReference($order)
+    {
+    	return sprintf('%010s', substr($order['order_id'], -10));
+    }
     /**
      * @return string
      */
-    protected function get_customer_layout()
+    protected function getCustomerLayout()
     {
         $objMobileDetect = new WirecardCEE_Stdlib_Mobiledetect();
         $layout = "desktop";

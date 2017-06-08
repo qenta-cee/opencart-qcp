@@ -34,12 +34,6 @@
  * terms of use!
  */
 
-// Load main controller
-$dir = dirname(__FILE__);
-require_once($dir . '/wirecard.php');
-
-class ControllerExtensionPaymentWirecardSkrillDirect extends ControllerExtensionPaymentWirecard
-{
-    // define payment type
-    public $payment_type = '_skrilldirect';
-}
+$_['text_title'] = 'SEPA Lastschrift';
+$_['text_reason'] = 'REASON';
+$_['text_total'] = 'Shipping, Handling, Discounts & Taxes';

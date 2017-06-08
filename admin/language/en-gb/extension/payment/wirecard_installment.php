@@ -36,3 +36,18 @@
 
 $_['heading_title'] = 'Wirecard Checkout Page Installment';
 $_['text_wirecard_installment'] = '<a href="http://www.wirecard.at/" target="_blank"><img src="view/image/payment/wirecard.png" alt="Wirecard" title="Wirecard CEE" /></a>';
+
+$_['provider_title'] = 'Installment Provider';
+$_['provider_descript'] = 'Select your installment provider';
+
+$_['country_title'] = 'Allowed countries';
+$_['country_descript'] = 'Select allowed countries for installment';
+
+$_['currency_title'] = 'Accepted currencies';
+$_['currency_descript'] = 'Select accepted currencies for installment';
+
+$_['mId_title'] = 'Payolution mID';
+$_['mId_descript'] = 'Your payolution merchant ID consisting of the base64-encoded company name which is used in the link for \'consent\' to the payolution terms.';
+
+$_['terms_title'] = 'Payolution terms';
+$_['terms_descript'] = 'If your online shop is certified by \'Trusted Shops\', display the corresponding checkbox with payolution terms for the consumer to agree with during the checkout process.';

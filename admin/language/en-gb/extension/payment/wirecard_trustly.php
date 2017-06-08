@@ -34,6 +34,5 @@
  * terms of use!
  */
 
-$_['text_title'] = 'CLICK2PAY';
-$_['text_reason'] = 'REASON';
-$_['text_total'] = 'Shipping, Handling, Discounts & Taxes';
+$_['heading_title'] = 'Wirecard Checkout Page Trustly';
+$_['text_wirecard_trustly'] = '<a href="http://www.wirecard.at/" target="_blank"><img src="view/image/payment/wirecard.png" alt="Wirecard" title="Wirecard CEE" /></a>';

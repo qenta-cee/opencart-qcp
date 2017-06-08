@@ -34,6 +34,11 @@
  * terms of use!
  */
 
-$_['text_title'] = 'Direct Debit';
-$_['text_reason'] = 'REASON';
-$_['text_total'] = 'Shipping, Handling, Discounts & Taxes';
+// Load main controller
+$dir = dirname(__FILE__);
+require_once($dir . '/wirecard.php');
+
+class ModelExtensionPaymentWirecardMasterpass extends ModelExtensionPaymentWirecard
+{
+    public $payment_type = '_masterpass';
+}

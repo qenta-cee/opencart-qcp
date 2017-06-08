@@ -34,6 +34,16 @@
  * terms of use!
  */
 
-$_['text_title'] = 'Lastschriftverfahren';
-$_['text_reason'] = 'REASON';
-$_['text_total'] = 'Shipping, Handling, Discounts & Taxes';
+// Load main controller
+$dir = dirname(__FILE__);
+require_once($dir . '/wirecard.php');
+
+class ControllerExtensionPaymentWirecardMasterpass extends ControllerExtensionPaymentWirecard
+{
+    private $error = array();
+
+    // define payment type
+    public $payment_type_prefix = '_masterpass';
+
+    public $payment_type = WirecardCEE_QPay_PaymentType::MASTERPASS;
+}

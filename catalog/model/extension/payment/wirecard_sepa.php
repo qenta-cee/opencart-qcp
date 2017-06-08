@@ -38,7 +38,7 @@
 $dir = dirname(__FILE__);
 require_once($dir . '/wirecard.php');
 
-class ModelExtensionPaymentWirecardSkrillDirect extends ModelExtensionPaymentWirecard
+class ModelExtensionPaymentWirecardSepa extends ModelExtensionPaymentWirecard
 {
-    public $payment_type = '_skrilldirect';
+    public $payment_type = '_sepa';
 }
