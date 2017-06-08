@@ -63,6 +63,8 @@ class ControllerExtensionPaymentWirecardInstallment extends ControllerExtensionP
         'confirmMail' => 'input',
         'customerStatement' => 'textarea',
         'iframe' => 'true_false',
+        'consumerInformation' => 'true_false',
+        'basketData' => 'true_false',
         'provider' => 'select_provider',
         'terms' => 'true_false',
         'mId' => 'input',

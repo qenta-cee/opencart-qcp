@@ -224,7 +224,7 @@
 			id="select-<?php echo $prefix.$fieldname;?>"
 			name="<?php echo $prefix.$fieldname;?>[]">
 		<?php foreach ($countries as $country) { ?>
-		<?php if (in_array($country['country_id'], $input[$prefix.$fieldname])) { ?>
+		<?php if (isset($input[$prefix.$fieldname]) && in_array($country['country_id'], $input[$prefix.$fieldname])) { ?>
 		<option value="<?php echo $country['country_id']; ?>"
 				selected="selected"><?php echo $country['name']; ?></option>
 		<?php } else { ?>
@@ -251,7 +251,7 @@
 			id="select-<?php echo $prefix.$fieldname;?>"
 			name="<?php echo $prefix.$fieldname;?>[]">
 		<?php foreach ($currencies as $currency) { ?>
-		<?php if (in_array($currency['code'], $input[$prefix.$fieldname])) { ?>
+		<?php if (isset($input[$prefix.$fieldname]) && in_array($currency['code'], $input[$prefix.$fieldname])) { ?>
 		<option value="<?php echo $currency['code']; ?>"
 				selected="selected"><?php echo $currency['code']; ?></option>
 		<?php } else { ?>
