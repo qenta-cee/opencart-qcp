@@ -158,6 +158,7 @@ class ControllerExtensionPaymentWirecard extends Controller
         $result = $this->model_extension_payment_wirecard->sendRequest($prefix, $paymentType, $order_info, $birthday,
             $pluginVersion, $financial_institution);
 
+	    $template = 'wirecard';
         // If connection to wirecard success set template
         if ($result) {
             $data['action'] = $result;

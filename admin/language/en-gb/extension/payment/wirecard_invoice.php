@@ -47,7 +47,7 @@ $_['currency_title'] = 'Accepted currencies';
 $_['currency_descript'] = 'Select accepted currencies for invoice';
 
 $_['mId_title'] = 'Payolution mID';
-$_['mId_descript'] = 'Your payolution merchant ID consisting of the base64-encoded company name which is used in the link for \'consent\' to the payolution terms.';
+$_['mId_descript'] = 'Your payolution merchant ID, non-base64-encoded.';
 
 $_['terms_title'] = 'Payolution terms';
-$_['terms_descript'] = 'If your online shop is certified by \'Trusted Shops\', display the corresponding checkbox with payolution terms for the consumer to agree with during the checkout process.';
+$_['terms_descript'] = 'Consumer must accept payolution terms during the checkout process.';

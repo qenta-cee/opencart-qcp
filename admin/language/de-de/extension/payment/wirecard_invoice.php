@@ -47,7 +47,7 @@ $_['currency_title'] = 'Akzeptierte Währungen';
 $_['currency_descript'] = 'Wählen Sie die akzeptierten Währungen für Kauf auf Rechnung aus';
 
 $_['mId_title'] = 'Payolution mID';
-$_['mId_descript'] = 'payolution-Händler-ID, bestehend aus dem Base64-enkodierten Firmennamen, die für den Link \'Einwilligen\' gesetzt werden kann.';
+$_['mId_descript'] = 'payolution-Händler-ID, Nicht base64 kodiert.';
 
-$_['terms_title'] = 'Payolution Konditionen';
-$_['terms_descript'] = 'Anzeige der Checkbox mit den payolution-Bedingungen, die vom Kunden während des Bezahlprozesses bestätigt werden müssen, wenn Ihr Onlineshop als \'Trusted Shop\' zertifiziert ist.';
+$_['terms_title'] = 'Payolution Nutzungsbedingungen';
+$_['terms_descript'] = 'Kunden müssen die Nutzungsbedingungen von payolution während des Bezahlprozesses akzeptieren.';

@@ -34,5 +34,5 @@
  * terms of use!
  */
 
-$_['heading_title'] = 'Wirecard Checkout Page Mobile Phone Invoicing';
+$_['heading_title'] = 'Wirecard Checkout Page Paybox';
 $_['text_wirecard_pbx'] = '<a href="http://www.wirecard.at/" target="_blank"><img src="view/image/payment/wirecard.png" alt="Wirecard" title="Wirecard CEE" /></a>';

@@ -274,7 +274,7 @@ class ModelExtensionPaymentWirecard extends Model
                 ->setConsumerData($consumerData)
                 ->createConsumerMerchantCrmId($order['email'])
                 ->setDisplayText($fields['displayText'])
-                ->setCustomerStatement($this->getCustomerStatement($order, $paymentType))
+                ->setCustomerStatement($this->getCustomerStatement($order, $paymentType, $prefix))
                 ->setDuplicateRequestCheck(false)
                 ->setMaxRetries($fields['maxRetries'])
                 ->setAutoDeposit($fields['autoDeposit'])
@@ -402,8 +402,11 @@ class ModelExtensionPaymentWirecard extends Model
      * @param $order
      * @return string
      */
-    protected function getCustomerStatement($order, $payment_type)
+    protected function getCustomerStatement($order, $payment_type, $prefix)
     {
+    	if(strlen($this->config->get($prefix.'_customerStatement'))) {
+    		return $this->config->get($prefix.'_customerStatement');
+	    }
         $customer_statement = sprintf('%9s', substr($order['store_name'], 0, 9));
 	    if ($payment_type != WirecardCEE_QPay_PaymentType::POLI) {
 		    $customer_statement .= ' ' . $this->getOrderReference($order);

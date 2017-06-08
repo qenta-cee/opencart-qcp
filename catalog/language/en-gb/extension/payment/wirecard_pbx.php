@@ -34,6 +34,6 @@
  * terms of use!
  */
 
-$_['text_title'] = 'Mobile Phone Invoicing';
+$_['text_title'] = 'Paybox';
 $_['text_reason'] = 'REASON';
 $_['text_total'] = 'Shipping, Handling, Discounts & Taxes';
