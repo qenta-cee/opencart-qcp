@@ -3,6 +3,7 @@
 [![License](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://raw.githubusercontent.com/wirecard/opencart-wcp/master/LICENSE)
 [![OpenCart](https://img.shields.io/badge/OpenCart-v2.3.0.2-green.svg)](https://www.opencart.com/)
 [![PHP v5.6](https://img.shields.io/badge/php-v5.6-yellow.svg)](http://www.php.net)
+[![PHP v7](https://img.shields.io/badge/php-v7-yellow.svg)](http://www.php.net)
 
 Wirecard Checkout Page plugin for OpenCart. 
 
