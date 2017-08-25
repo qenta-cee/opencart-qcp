@@ -34,7 +34,7 @@
  * terms of use!
  */
 ?>
-
+<?php echo $wcp_ratepay; ?>
 <form class="form-horizontal" action="<?php echo $action ?>" method="post" name="wirecard_checkout_page_send" id="payment">
     <fieldset id="payment">
         <legend><?php echo $text_title; ?></legend>

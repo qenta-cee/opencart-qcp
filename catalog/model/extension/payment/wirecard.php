@@ -281,6 +281,10 @@ class ModelExtensionPaymentWirecard extends Model
 	            ->setOrderReference($this->getOrderReference($order))
                 ->setLayout($strCustomerLayout);
 
+            if (isset($_SESSION['wcpConsumerDeviceId'])) {
+            	$client->consumerDeviceId = $_SESSION['wcpConsumerDeviceId'];
+            	unset($_SESSION['wcpConsumerDeviceId']);
+            }
 	        if ($fields['sendBasketData'] ||
 		        ($paymentType == WirecardCEE_QPay_PaymentType::INVOICE && $this->config->get($prefix.'_provider') != 'payolution') ||
 		        ($paymentType == WirecardCEE_QPay_PaymentType::INSTALLMENT && $this->config->get($prefix.'_provider') != 'payolution')

@@ -76,6 +76,7 @@ class ControllerExtensionPaymentWirecardInstallment extends ControllerExtensionP
 		$data['send_order'] = $this->language->get('send_order');
 		$data['error_init'] = $this->language->get('error_init');
 
+		$data['wcp_ratepay'] = $this->loadRatePay();
 		// Set Action URI
 		$data['action'] = $this->url->link('extension/payment/'.$prefix.'/init', '', 'SSL');
 
