@@ -34,6 +34,7 @@
  * terms of use!
  */
 ?>
+<?php echo $wcp_ratepay; ?>
 
 <form class="form-horizontal" action="<?php echo $action ?>" method="post" name="wirecard_checkout_page_send" id="payment">
     <input type="hidden" name="wirecard_checkout_page_window_name" value="<?php echo $window_name; ?>">
