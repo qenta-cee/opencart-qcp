@@ -34,6 +34,6 @@
  * terms of use!
  */
 
-$_['text_title'] = 'SOFORT banking';
+$_['text_title'] = 'Online bank transfer.';
 $_['text_reason'] = 'REASON';
 $_['text_total'] = 'Shipping, Handling, Discounts & Taxes';
