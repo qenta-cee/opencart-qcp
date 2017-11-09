@@ -57,8 +57,6 @@ class ModelExtensionPaymentWirecardInstallment extends ModelExtensionPaymentWire
             $payment_address = $this->model_account_address->getAddress($this->session->data['payment_address']['address_id']);
             $shipping_address = $this->model_account_address->getAddress($this->session->data['shipping_address']['address_id']);
 
-            echo "payment address: " . $payment_address . "<br>";
-            echo "shipping address: " . $shipping_address . "<br>";
             $fields = array(
                 'firstname',
                 'lastname',
