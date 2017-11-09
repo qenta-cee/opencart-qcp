@@ -43,7 +43,7 @@ class ControllerExtensionPaymentWirecard extends Controller
 {
     protected $data = array();
 
-    private $pluginVersion = '1.5.2';
+    private $pluginVersion = '2.0.0';
 
     private $prefix = 'wirecard';
 
