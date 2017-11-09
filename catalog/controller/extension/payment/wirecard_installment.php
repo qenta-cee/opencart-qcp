@@ -58,9 +58,9 @@ class ControllerExtensionPaymentWirecardInstallment extends ControllerExtensionP
 		$data['window_name']    = $this->model_extension_payment_wirecard->get_window_name();
 
 		$template                          = 'wirecard_installment';
-		$data['provider']                  = $this->config->get($prefix.'_provider');
-		$data['terms']                     = $this->config->get($prefix.'_terms');
-		$data['mId']                       = $this->config->get($prefix.'_mId');
+		$data['provider']                  = $this->config->get('paymnet_'.$prefix.'_provider');
+		$data['terms']                     = $this->config->get('paymnet_'.$prefix.'_terms');
+		$data['mId']                       = $this->config->get('paymnet_'.$prefix.'_mId');
 		$data['text_title']                = $this->language->get('text_title');
 		$data['text_birthday']             = $this->language->get('text_birthday');
 		$data['text_birthday_information'] = $this->language->get('text_birthday_information');
@@ -81,10 +81,10 @@ class ControllerExtensionPaymentWirecardInstallment extends ControllerExtensionP
 		$data['action'] = $this->url->link('extension/payment/'.$prefix.'/init', '', 'SSL');
 
 		// Template Output
-		if (file_exists(DIR_TEMPLATE.$this->config->get('config_template').'/template/extension/payment/'.$template.'.tpl')) {
-			$this->template = $this->config->get('config_template').'/template/extension/payment/'.$template.'.tpl';
+		if (file_exists(DIR_TEMPLATE.$this->config->get('config_template').'/template/extension/payment/'.$template)) {
+			$this->template = $this->config->get('config_template').'/template/extension/payment/'.$template;
 		} else {
-			$this->template = 'extension/payment/'.$template.'.tpl';
+			$this->template = 'extension/payment/'.$template;
 		}
 
 		return $this->load->view($this->template, $data);
