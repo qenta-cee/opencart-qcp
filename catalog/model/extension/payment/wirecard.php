@@ -155,8 +155,7 @@ class ModelExtensionPaymentWirecard extends Model
             ->setCity($order['payment_city'])
             ->setZipCode($order['payment_postcode'])
             ->setCountry($countryCode)
-            ->setPhone($order['telephone'])
-            ->setFax($order['fax']);
+            ->setPhone($order['telephone']);
 
         if ($countryCode == 'US' || $countryCode == 'CA') {
             $billingAddress->setState(substr($order['payment_zone_code'], 0, 2));
@@ -175,8 +174,7 @@ class ModelExtensionPaymentWirecard extends Model
                 ->setAddress2($order['shipping_address_2'])
                 ->setCity($order['shipping_city'])
                 ->setZipCode($order['shipping_postcode'])
-                ->setCountry($countryCode)
-                ->setFax($order['fax']);
+                ->setCountry($countryCode);
 
         } else {
             $shippingAddress->setFirstname($order['payment_firstname'])
@@ -186,8 +184,7 @@ class ModelExtensionPaymentWirecard extends Model
                 ->setCity($order['payment_city'])
                 ->setZipCode($order['payment_postcode'])
                 ->setCountry($countryCode)
-                ->setPhone($order['telephone'])
-                ->setFax($order['fax']);
+                ->setPhone($order['telephone']);
         }
 
         if ($countryCode == 'US' || $countryCode == 'CA') {
