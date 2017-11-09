@@ -69,11 +69,11 @@ class ModelExtensionPaymentWirecard extends Model
 
         $this->load->language('extension/payment/' . $prefix);
 
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->config->get($prefix . '_geo_zone_id') . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->config->get('payment_' . $prefix . '_geo_zone_id') . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
 
-        if ($this->config->get($prefix . '_total') > 0 && $this->config->get($prefix . '_total') > $total) {
+        if ($this->config->get('payment_' . $prefix . '_total') > 0 && $this->config->get('payment_' . $prefix . '_total') > $total) {
             $status = false;
-        } elseif (!$this->config->get($prefix . '_geo_zone_id')) {
+        } elseif (!$this->config->get('payment_' . $prefix . '_geo_zone_id')) {
             $status = true;
         } elseif ($query->num_rows) {
             $status = true;
@@ -88,7 +88,7 @@ class ModelExtensionPaymentWirecard extends Model
                 'code' => $prefix,
                 'title' => $this->language->get('text_title'),
                 'terms' => '',
-                'sort_order' => $this->config->get($prefix . '_sort_order')
+                'sort_order' => $this->config->get('payment_' . $prefix . '_sort_order')
             );
         }
 
@@ -103,6 +103,7 @@ class ModelExtensionPaymentWirecard extends Model
      */
     public function getConfig($prefix)
     {
+        $prefix = 'payment_' . $prefix;
         // set defined fields
         foreach ($this->fields as $field) {
             $data[$field] = $this->config->get($prefix . '_' . $field);
@@ -286,8 +287,8 @@ class ModelExtensionPaymentWirecard extends Model
             	unset($_SESSION['wcpConsumerDeviceId']);
             }
 	        if ($fields['sendBasketData'] ||
-		        ($paymentType == WirecardCEE_QPay_PaymentType::INVOICE && $this->config->get($prefix.'_provider') != 'payolution') ||
-		        ($paymentType == WirecardCEE_QPay_PaymentType::INSTALLMENT && $this->config->get($prefix.'_provider') != 'payolution')
+		        ($paymentType == WirecardCEE_QPay_PaymentType::INVOICE && $this->config->get('payment_'.$prefix.'_provider') != 'payolution') ||
+		        ($paymentType == WirecardCEE_QPay_PaymentType::INSTALLMENT && $this->config->get('payment_'.$prefix.'_provider') != 'payolution')
 	        ) {
 		        $client->setBasket($this->setBasketData());
 	        }
@@ -407,8 +408,8 @@ class ModelExtensionPaymentWirecard extends Model
      */
     protected function getCustomerStatement($order, $payment_type, $prefix)
     {
-    	if(strlen($this->config->get($prefix.'_customerStatement'))) {
-    		return $this->config->get($prefix.'_customerStatement');
+    	if(strlen($this->config->get('payment_'.$prefix.'_customerStatement'))) {
+    		return $this->config->get('payment_'.$prefix.'_customerStatement');
 	    }
         $customer_statement = sprintf('%9s', substr($order['store_name'], 0, 9));
 	    if ($payment_type != WirecardCEE_QPay_PaymentType::POLI) {
