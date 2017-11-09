@@ -69,10 +69,10 @@ class ControllerExtensionPaymentWirecardEps extends ControllerExtensionPaymentWi
 		$data['action'] = $this->url->link('extension/payment/'.$prefix.'/init', '', 'SSL');
 
 		// Template Output
-		if (file_exists(DIR_TEMPLATE.$this->config->get('config_template').'/template/extension/payment/'.$template.'.tpl')) {
-			$this->template = $this->config->get('config_template').'/template/extension/payment/'.$template.'.tpl';
+		if (file_exists(DIR_TEMPLATE.$this->config->get('config_template').'/template/extension/payment/'.$template)) {
+			$this->template = $this->config->get('config_template').'/template/extension/payment/'.$template;
 		} else {
-			$this->template = 'extension/payment/'.$template.'.tpl';
+			$this->template = 'extension/payment/'.$template;
 		}
 
 		return $this->load->view($this->template, $data);
