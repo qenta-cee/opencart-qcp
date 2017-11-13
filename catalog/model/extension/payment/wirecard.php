@@ -318,11 +318,11 @@ class ModelExtensionPaymentWirecard extends Model
 		$fix_tax = 0;
 		foreach ($basketContent->getProducts() as $cart_item_key => $cart_item) {
 			$item         = new WirecardCEE_Stdlib_Basket_Item($cart_item['product_id']);
-			$gross_amount = $this->tax->calculate($cart_item['price'], $cart_item['tax_class_id'], 'P');
-			$tax_amount   = $gross_amount - $cart_item['price'];
-			$item->setUnitGrossAmount($this->convertAndFormat($gross_amount, $currencyCode, $currencyValue))
-				->setUnitNetAmount($this->convertAndFormat($cart_item['price'], $currencyCode, $currencyValue))
-				->setUnitTaxAmount($this->convertAndFormat($tax_amount, $currencyCode, $currencyValue))
+			$gross_amount = $this->tax->calculate($this->convert($cart_item['price'], $currencyCode, $currencyValue), $cart_item['tax_class_id'], 'P');
+			$tax_amount   = $gross_amount - $this->convert($cart_item['price'], $currencyCode, $currencyValue);
+			$item->setUnitGrossAmount($gross_amount)
+				->setUnitNetAmount($this->convert($cart_item['price'], $currencyCode, $currencyValue))
+				->setUnitTaxAmount($tax_amount)
 				->setUnitTaxRate($this->convert($tax_amount / $cart_item['price'] * 100, $currencyCode, $currencyValue))
 				->setUnitTaxRate($this->convert($tax_amount / $cart_item['price'] * 100, $currencyCode, $currencyValue))
 				->setDescription(substr(utf8_decode($cart_item['name']), 0, 127))
@@ -330,8 +330,9 @@ class ModelExtensionPaymentWirecard extends Model
 				->setImageUrl($this->url->link($cart_item['image']));
 
 			$basket->addItem($item, $cart_item['quantity']);
-			$fix_tax += $this->tax->calculate($cart_item['price'], $cart_item['tax_class_id'], 'F') - $cart_item['price'];
-		}
+            $tax = $this->tax->calculate($this->convert($cart_item['price'], $currencyCode, $currencyValue), $cart_item['tax_class_id'], 'F') - $this->convert($cart_item['price'], $currencyCode, $currencyValue);
+            $fix_tax += $tax * $cart_item['quantity'];
+        }
 		//Add shipping to basket
 		if (isset($this->session->data['shipping_method'])) {
 			$session_data    = $this->session->data;
