@@ -36,8 +36,7 @@
 
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . DIR_SYSTEM . '/library/wirecard');
 
-require_once 'Zend/Loader/Autoloader.php';
-Zend_Loader_Autoloader::getInstance()->registerNamespace("WirecardCEE");
+require_once 'vendor/autoload.php';
 
 class ModelExtensionPaymentWirecard extends Model
 {
@@ -287,7 +286,7 @@ class ModelExtensionPaymentWirecard extends Model
 		        ($paymentType == WirecardCEE_QPay_PaymentType::INVOICE && $this->config->get('payment_'.$prefix.'_provider') != 'payolution') ||
 		        ($paymentType == WirecardCEE_QPay_PaymentType::INSTALLMENT && $this->config->get('payment_'.$prefix.'_provider') != 'payolution')
 	        ) {
-		        $client->setBasket($this->setBasketData());
+		        $client->setBasket($this->setBasketData($order['currency_code'], $order['currency_value']));
 	        }
 
             $client->opencartOrderId = $order['order_id'];
@@ -312,7 +311,7 @@ class ModelExtensionPaymentWirecard extends Model
 	 *
 	 * @return WirecardCEE_Stdlib_Basket
 	 */
-	public function setBasketData() {
+	public function setBasketData($currencyCode, $currencyValue) {
 		$basket        = new WirecardCEE_Stdlib_Basket();
 		$basketContent = $this->cart;
 
@@ -321,10 +320,11 @@ class ModelExtensionPaymentWirecard extends Model
 			$item         = new WirecardCEE_Stdlib_Basket_Item($cart_item['product_id']);
 			$gross_amount = $this->tax->calculate($cart_item['price'], $cart_item['tax_class_id'], 'P');
 			$tax_amount   = $gross_amount - $cart_item['price'];
-			$item->setUnitGrossAmount(number_format($gross_amount, 2))
-				->setUnitNetAmount(number_format($cart_item['price'], 2))
-				->setUnitTaxAmount(number_format($tax_amount, 2))
-				->setUnitTaxRate($tax_amount / $cart_item['price'] * 100)
+			$item->setUnitGrossAmount($this->convertAndFormat($gross_amount, $currencyCode, $currencyValue))
+				->setUnitNetAmount($this->convertAndFormat($cart_item['price'], $currencyCode, $currencyValue))
+				->setUnitTaxAmount($this->convertAndFormat($tax_amount, $currencyCode, $currencyValue))
+				->setUnitTaxRate($this->convert($tax_amount / $cart_item['price'] * 100, $currencyCode, $currencyValue))
+				->setUnitTaxRate($this->convert($tax_amount / $cart_item['price'] * 100, $currencyCode, $currencyValue))
 				->setDescription(substr(utf8_decode($cart_item['name']), 0, 127))
 				->setName(substr(utf8_decode($cart_item['name']), 0, 127))
 				->setImageUrl($this->url->link($cart_item['image']));
@@ -337,10 +337,10 @@ class ModelExtensionPaymentWirecard extends Model
 			$session_data    = $this->session->data;
 			$shipping_method = $session_data['shipping_method'];
 			$item            = new WirecardCEE_Stdlib_Basket_Item('shipping');
-			$item->setUnitGrossAmount(number_format($this->tax->calculate($shipping_method['cost'], $shipping_method['tax_class_id'], 'P'), 2))
-				->setUnitNetAmount(number_format($shipping_method['cost'], 2))
-				->setUnitTaxRate($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']) / $shipping_method['cost'] * 100)
-				->setUnitTaxAmount(number_format($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']), 2))
+			$item->setUnitGrossAmount($this->convertAndFormat($this->tax->calculate($shipping_method['cost'], $shipping_method['tax_class_id'], 'P'), $currencyCode, $currencyValue))
+				->setUnitNetAmount($this->convertAndFormat($shipping_method['cost'], $currencyCode, $currencyValue))
+				->setUnitTaxRate($this->convert($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']) / $shipping_method['cost'] * 100, $currencyCode, $currencyValue))
+				->setUnitTaxAmount($this->convertAndFormat($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']), $currencyCode, $currencyValue))
 				->setName('Shipping')
 				->setDescription('Shipping');
 			$basket->addItem($item);
@@ -350,9 +350,9 @@ class ModelExtensionPaymentWirecard extends Model
 		// Add fix tax as basket item
 		if ($fix_tax > 0) {
 			$item = new WirecardCEE_Stdlib_Basket_Item('FixTax');
-			$item->setUnitGrossAmount(number_format($fix_tax, 2))
-				->setUnitNetAmount(number_format($fix_tax, 2))
-				->setUnitTaxAmount(number_format(0, 2))
+			$item->setUnitGrossAmount($this->convertAndFormat($fix_tax, $currencyCode, $currencyValue))
+				->setUnitNetAmount($this->convertAndFormat($fix_tax, $currencyCode, $currencyValue))
+				->setUnitTaxAmount($this->convertAndFormat(0, $currencyCode, $currencyValue))
 				->setUnitTaxRate(0)
 				->setDescription('FixTax')
 				->setName('FixTax');
@@ -429,7 +429,7 @@ class ModelExtensionPaymentWirecard extends Model
      */
     protected function getCustomerLayout()
     {
-        $objMobileDetect = new WirecardCEE_Stdlib_Mobiledetect();
+        $objMobileDetect = new WirecardCEE_QPay_MobileDetect();
         $layout = "desktop";
 
         if ($objMobileDetect->isMobile($_SERVER['HTTP_USER_AGENT']) === true) {
@@ -441,5 +441,29 @@ class ModelExtensionPaymentWirecard extends Model
         }
 
         return $layout;
+    }
+
+    /**
+     * @param $amount
+     * @param $currencyCode
+     * @param $currencyValue
+     *
+     * @return float
+     */
+    protected function convertAndFormat($amount, $currencyCode, $currencyValue)
+    {
+        return number_format($this->currency->format($amount, $currencyCode, $currencyValue, false), 2);
+    }
+
+    /**
+     * @param $amount
+     * @param $currencyCode
+     * @param $currencyValue
+     *
+     * @return float
+     */
+    protected function convert($amount, $currencyCode, $currencyValue)
+    {
+        return $this->currency->format($amount, $currencyCode, $currencyValue, false);
     }
 }

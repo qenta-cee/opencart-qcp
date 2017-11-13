@@ -36,8 +36,7 @@
 
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . DIR_SYSTEM . '/library/wirecard');
 
-require_once 'Zend/Loader/Autoloader.php';
-Zend_Loader_Autoloader::getInstance()->registerNamespace("WirecardCEE");
+require_once 'vendor/autoload.php';
 
 class ControllerExtensionPaymentWirecard extends Controller
 {
