@@ -1,0 +1,6 @@
+{
+    "require": {
+        "guzzlehttp/guzzle": "^6.3",
+        "wirecard/checkout-client-library": "3.3.5"
+    }
+}

@@ -36,8 +36,7 @@
 
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . DIR_SYSTEM . '/library/wirecard');
 
-require_once 'Zend/Loader/Autoloader.php';
-Zend_Loader_Autoloader::getInstance()->registerNamespace("WirecardCEE");
+require_once 'vendor/autoload.php';
 
 class ModelExtensionPaymentWirecard extends Model
 {
@@ -69,11 +68,11 @@ class ModelExtensionPaymentWirecard extends Model
 
         $this->load->language('extension/payment/' . $prefix);
 
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->config->get($prefix . '_geo_zone_id') . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->config->get('payment_' . $prefix . '_geo_zone_id') . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
 
-        if ($this->config->get($prefix . '_total') > 0 && $this->config->get($prefix . '_total') > $total) {
+        if ($this->config->get('payment_' . $prefix . '_total') > 0 && $this->config->get('payment_' . $prefix . '_total') > $total) {
             $status = false;
-        } elseif (!$this->config->get($prefix . '_geo_zone_id')) {
+        } elseif (!$this->config->get('payment_' . $prefix . '_geo_zone_id')) {
             $status = true;
         } elseif ($query->num_rows) {
             $status = true;
@@ -88,7 +87,7 @@ class ModelExtensionPaymentWirecard extends Model
                 'code' => $prefix,
                 'title' => $this->language->get('text_title'),
                 'terms' => '',
-                'sort_order' => $this->config->get($prefix . '_sort_order')
+                'sort_order' => $this->config->get('payment_' . $prefix . '_sort_order')
             );
         }
 
@@ -103,6 +102,7 @@ class ModelExtensionPaymentWirecard extends Model
      */
     public function getConfig($prefix)
     {
+        $prefix = 'payment_' . $prefix;
         // set defined fields
         foreach ($this->fields as $field) {
             $data[$field] = $this->config->get($prefix . '_' . $field);
@@ -154,8 +154,7 @@ class ModelExtensionPaymentWirecard extends Model
             ->setCity($order['payment_city'])
             ->setZipCode($order['payment_postcode'])
             ->setCountry($countryCode)
-            ->setPhone($order['telephone'])
-            ->setFax($order['fax']);
+            ->setPhone($order['telephone']);
 
         if ($countryCode == 'US' || $countryCode == 'CA') {
             $billingAddress->setState(substr($order['payment_zone_code'], 0, 2));
@@ -174,8 +173,7 @@ class ModelExtensionPaymentWirecard extends Model
                 ->setAddress2($order['shipping_address_2'])
                 ->setCity($order['shipping_city'])
                 ->setZipCode($order['shipping_postcode'])
-                ->setCountry($countryCode)
-                ->setFax($order['fax']);
+                ->setCountry($countryCode);
 
         } else {
             $shippingAddress->setFirstname($order['payment_firstname'])
@@ -185,8 +183,7 @@ class ModelExtensionPaymentWirecard extends Model
                 ->setCity($order['payment_city'])
                 ->setZipCode($order['payment_postcode'])
                 ->setCountry($countryCode)
-                ->setPhone($order['telephone'])
-                ->setFax($order['fax']);
+                ->setPhone($order['telephone']);
         }
 
         if ($countryCode == 'US' || $countryCode == 'CA') {
@@ -286,10 +283,10 @@ class ModelExtensionPaymentWirecard extends Model
             	unset($_SESSION['wcpConsumerDeviceId']);
             }
 	        if ($fields['sendBasketData'] ||
-		        ($paymentType == WirecardCEE_QPay_PaymentType::INVOICE && $this->config->get($prefix.'_provider') != 'payolution') ||
-		        ($paymentType == WirecardCEE_QPay_PaymentType::INSTALLMENT && $this->config->get($prefix.'_provider') != 'payolution')
+		        ($paymentType == WirecardCEE_QPay_PaymentType::INVOICE && $this->config->get('payment_'.$prefix.'_provider') != 'payolution') ||
+		        ($paymentType == WirecardCEE_QPay_PaymentType::INSTALLMENT && $this->config->get('payment_'.$prefix.'_provider') != 'payolution')
 	        ) {
-		        $client->setBasket($this->setBasketData());
+		        $client->setBasket($this->setBasketData($order['currency_code'], $order['currency_value']));
 	        }
 
             $client->opencartOrderId = $order['order_id'];
@@ -314,35 +311,37 @@ class ModelExtensionPaymentWirecard extends Model
 	 *
 	 * @return WirecardCEE_Stdlib_Basket
 	 */
-	public function setBasketData() {
+	public function setBasketData($currencyCode, $currencyValue) {
 		$basket        = new WirecardCEE_Stdlib_Basket();
 		$basketContent = $this->cart;
 
 		$fix_tax = 0;
 		foreach ($basketContent->getProducts() as $cart_item_key => $cart_item) {
 			$item         = new WirecardCEE_Stdlib_Basket_Item($cart_item['product_id']);
-			$gross_amount = $this->tax->calculate($cart_item['price'], $cart_item['tax_class_id'], 'P');
-			$tax_amount   = $gross_amount - $cart_item['price'];
-			$item->setUnitGrossAmount(number_format($gross_amount, 2))
-				->setUnitNetAmount(number_format($cart_item['price'], 2))
-				->setUnitTaxAmount(number_format($tax_amount, 2))
-				->setUnitTaxRate($tax_amount / $cart_item['price'] * 100)
+			$gross_amount = $this->tax->calculate($this->convert($cart_item['price'], $currencyCode, $currencyValue), $cart_item['tax_class_id'], 'P');
+			$tax_amount   = $gross_amount - $this->convert($cart_item['price'], $currencyCode, $currencyValue);
+			$item->setUnitGrossAmount($gross_amount)
+				->setUnitNetAmount($this->convert($cart_item['price'], $currencyCode, $currencyValue))
+				->setUnitTaxAmount($tax_amount)
+				->setUnitTaxRate($this->convert($tax_amount / $cart_item['price'] * 100, $currencyCode, $currencyValue))
+				->setUnitTaxRate($this->convert($tax_amount / $cart_item['price'] * 100, $currencyCode, $currencyValue))
 				->setDescription(substr(utf8_decode($cart_item['name']), 0, 127))
 				->setName(substr(utf8_decode($cart_item['name']), 0, 127))
 				->setImageUrl($this->url->link($cart_item['image']));
 
 			$basket->addItem($item, $cart_item['quantity']);
-			$fix_tax += $this->tax->calculate($cart_item['price'], $cart_item['tax_class_id'], 'F') - $cart_item['price'];
-		}
+            $tax = $this->tax->calculate($this->convert($cart_item['price'], $currencyCode, $currencyValue), $cart_item['tax_class_id'], 'F') - $this->convert($cart_item['price'], $currencyCode, $currencyValue);
+            $fix_tax += $tax * $cart_item['quantity'];
+        }
 		//Add shipping to basket
 		if (isset($this->session->data['shipping_method'])) {
 			$session_data    = $this->session->data;
 			$shipping_method = $session_data['shipping_method'];
 			$item            = new WirecardCEE_Stdlib_Basket_Item('shipping');
-			$item->setUnitGrossAmount(number_format($this->tax->calculate($shipping_method['cost'], $shipping_method['tax_class_id'], 'P'), 2))
-				->setUnitNetAmount(number_format($shipping_method['cost'], 2))
-				->setUnitTaxRate($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']) / $shipping_method['cost'] * 100)
-				->setUnitTaxAmount(number_format($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']), 2))
+			$item->setUnitGrossAmount($this->convertAndFormat($this->tax->calculate($shipping_method['cost'], $shipping_method['tax_class_id'], 'P'), $currencyCode, $currencyValue))
+				->setUnitNetAmount($this->convertAndFormat($shipping_method['cost'], $currencyCode, $currencyValue))
+				->setUnitTaxRate($this->convert($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']) / $shipping_method['cost'] * 100, $currencyCode, $currencyValue))
+				->setUnitTaxAmount($this->convertAndFormat($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']), $currencyCode, $currencyValue))
 				->setName('Shipping')
 				->setDescription('Shipping');
 			$basket->addItem($item);
@@ -352,9 +351,9 @@ class ModelExtensionPaymentWirecard extends Model
 		// Add fix tax as basket item
 		if ($fix_tax > 0) {
 			$item = new WirecardCEE_Stdlib_Basket_Item('FixTax');
-			$item->setUnitGrossAmount(number_format($fix_tax, 2))
-				->setUnitNetAmount(number_format($fix_tax, 2))
-				->setUnitTaxAmount(number_format(0, 2))
+			$item->setUnitGrossAmount($this->convertAndFormat($fix_tax, $currencyCode, $currencyValue))
+				->setUnitNetAmount($this->convertAndFormat($fix_tax, $currencyCode, $currencyValue))
+				->setUnitTaxAmount($this->convertAndFormat(0, $currencyCode, $currencyValue))
 				->setUnitTaxRate(0)
 				->setDescription('FixTax')
 				->setName('FixTax');
@@ -407,8 +406,8 @@ class ModelExtensionPaymentWirecard extends Model
      */
     protected function getCustomerStatement($order, $payment_type, $prefix)
     {
-    	if(strlen($this->config->get($prefix.'_customerStatement'))) {
-    		return $this->config->get($prefix.'_customerStatement');
+    	if(strlen($this->config->get('payment_'.$prefix.'_customerStatement'))) {
+    		return $this->config->get('payment_'.$prefix.'_customerStatement');
 	    }
         $customer_statement = sprintf('%9s', substr($order['store_name'], 0, 9));
 	    if ($payment_type != WirecardCEE_QPay_PaymentType::POLI) {
@@ -431,7 +430,7 @@ class ModelExtensionPaymentWirecard extends Model
      */
     protected function getCustomerLayout()
     {
-        $objMobileDetect = new WirecardCEE_Stdlib_Mobiledetect();
+        $objMobileDetect = new WirecardCEE_QPay_MobileDetect();
         $layout = "desktop";
 
         if ($objMobileDetect->isMobile($_SERVER['HTTP_USER_AGENT']) === true) {
@@ -443,5 +442,29 @@ class ModelExtensionPaymentWirecard extends Model
         }
 
         return $layout;
+    }
+
+    /**
+     * @param $amount
+     * @param $currencyCode
+     * @param $currencyValue
+     *
+     * @return float
+     */
+    protected function convertAndFormat($amount, $currencyCode, $currencyValue)
+    {
+        return number_format($this->currency->format($amount, $currencyCode, $currencyValue, false), 2);
+    }
+
+    /**
+     * @param $amount
+     * @param $currencyCode
+     * @param $currencyValue
+     *
+     * @return float
+     */
+    protected function convert($amount, $currencyCode, $currencyValue)
+    {
+        return $this->currency->format($amount, $currencyCode, $currencyValue, false);
     }
 }

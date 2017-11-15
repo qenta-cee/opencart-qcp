@@ -39,7 +39,7 @@ class ControllerExtensionPaymentWirecard extends Controller
     private $error = array();
 
     // define plugin prefix
-    protected $prefix = 'wirecard';
+    protected $prefix = 'payment_wirecard';
 
     // define input fields
     protected $arrayInputFields = array(
@@ -81,7 +81,7 @@ class ControllerExtensionPaymentWirecard extends Controller
         $this->load->model('localisation/order_status');
 
         $this->load->language('extension/payment/wirecard');
-        $this->load->language('extension/payment/' . $this->prefix . $this->payment_type);
+        $this->load->language('extension/payment/wirecard' . $this->payment_type);
 
         $data['boolHasValidationError'] = false;
 
@@ -97,8 +97,8 @@ class ControllerExtensionPaymentWirecard extends Controller
 
                 $this->session->data['success'] = $this->language->get('text_success');
 
-                $this->response->redirect($this->url->link('extension/extension',
-                    'token=' . $this->session->data['token'] . '&type=payment', true));
+                $this->response->redirect($this->url->link('marketplace/extension',
+                    'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
             } else {
                 $data['boolHasValidationError'] = true;
             }
@@ -160,26 +160,26 @@ class ControllerExtensionPaymentWirecard extends Controller
 
         $data['breadcrumbs'][] = array(
             'text' => $this->language->get('text_home'),
-            'href' => $this->url->link('common/dashboard', 'token=' . $this->session->data['token'], true)
+            'href' => $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], true)
         );
 
         $data['breadcrumbs'][] = array(
             'text' => $this->language->get('text_payment'),
-            'href' => $this->url->link('extension/extension',
-                'token=' . $this->session->data['token'] . '&type=payment', true)
+            'href' => $this->url->link('marketplace/extension',
+                'user_token=' . $this->session->data['user_token'] . '&type=payment', true)
         );
 
         $data['breadcrumbs'][] = array(
             'text' => $this->language->get('heading_title'),
-            'href' => $this->url->link('extension/payment/wirecard', 'token=' . $this->session->data['token'], true)
+            'href' => $this->url->link('extension/payment/wirecard', 'user_token=' . $this->session->data['user_token'], true)
         );
 
-        $data['action'] = $this->url->link('extension/payment/' . $this->prefix . $this->payment_type,
-            'token=' . $this->session->data['token'],
+        $data['action'] = $this->url->link('extension/payment/wirecard' . $this->payment_type,
+            'user_token=' . $this->session->data['user_token'],
             true);
 
-        $data['cancel'] = $this->url->link('extension/extension',
-            'token=' . $this->session->data['token'] . '&type=payment', true);
+        $data['cancel'] = $this->url->link('marketplace/extension',
+            'user_token=' . $this->session->data['user_token'] . '&type=payment', true);
 
 
         $data['header'] = $this->load->controller('common/header');
@@ -200,7 +200,7 @@ class ControllerExtensionPaymentWirecard extends Controller
      */
     protected function validate()
     {
-        if (!$this->user->hasPermission('modify', 'extension/payment/'. $this->prefix . $this->payment_type)) {
+        if (!$this->user->hasPermission('modify', 'extension/payment/wirecard' . $this->payment_type)) {
             $this->error['warning'] = $this->language->get('error_permission');
             return false;
         }

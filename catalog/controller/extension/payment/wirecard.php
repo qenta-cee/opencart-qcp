@@ -36,14 +36,13 @@
 
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . DIR_SYSTEM . '/library/wirecard');
 
-require_once 'Zend/Loader/Autoloader.php';
-Zend_Loader_Autoloader::getInstance()->registerNamespace("WirecardCEE");
+require_once 'vendor/autoload.php';
 
 class ControllerExtensionPaymentWirecard extends Controller
 {
     protected $data = array();
 
-    private $pluginVersion = '1.5.2';
+    private $pluginVersion = '2.0.0';
 
     private $prefix = 'wirecard';
 
@@ -85,10 +84,10 @@ class ControllerExtensionPaymentWirecard extends Controller
         $data['action'] = $this->url->link('extension/payment/' . $prefix . '/init', '', 'SSL');
 
         // Template Output
-        if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/' . $template . '.tpl')) {
-            $this->template = $this->config->get('config_template') . '/template/extension/payment/' . $template . '.tpl';
+        if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/' . $template)) {
+            $this->template = $this->config->get('config_template') . '/template/extension/payment/' . $template;
         } else {
-            $this->template = 'extension/payment/' . $template . '.tpl';
+            $this->template = 'extension/payment/' . $template;
         }
 
         return $this->load->view($this->template, $data);
@@ -175,7 +174,6 @@ class ControllerExtensionPaymentWirecard extends Controller
         // additional Data
         $data['button_confirm'] = $this->language->get('button_confirm');
         $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-
         $pluginVersion = WirecardCEE_QPay_FrontendClient::generatePluginVersion($order_info['store_name'], VERSION,
             'Opencart Wirecard Checkout Page', $this->pluginVersion);
 
@@ -194,7 +192,7 @@ class ControllerExtensionPaymentWirecard extends Controller
             $data['action'] = $result;
 
             // Check if iframe is active
-            if ($this->config->get($prefix . '_iframe') == '1') {
+            if ($this->config->get('payment_' . $prefix . '_iframe') == '1') {
                 $template = 'wirecard_iframe';
             } else {
                 $this->response->redirect($data['action']);
@@ -205,10 +203,10 @@ class ControllerExtensionPaymentWirecard extends Controller
         }
 
         // Template Output
-        if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/' . $template . '.tpl')) {
-            $this->template = $this->config->get('config_template') . '/template/extension/payment/' . $template . '.tpl';
+        if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/extension/payment/' . $template)) {
+            $this->template = $this->config->get('config_template') . '/template/extension/payment/' . $template;
         } else {
-            $this->template = 'extension/payment/' . $template . '.tpl';
+            $this->template = 'extension/payment/' . $template;
         }
 
         $data['header'] = $this->load->controller('common/header');
@@ -229,7 +227,7 @@ class ControllerExtensionPaymentWirecard extends Controller
     public function callback()
     {
         // Prefix
-        $prefix = $this->prefix . $this->payment_type_prefix;
+        $prefix = 'payment_' . $this->prefix . $this->payment_type_prefix;
 
         // Load required files
         $this->load->model('checkout/order');

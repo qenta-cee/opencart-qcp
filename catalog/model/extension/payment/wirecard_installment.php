@@ -57,8 +57,6 @@ class ModelExtensionPaymentWirecardInstallment extends ModelExtensionPaymentWire
             $payment_address = $this->model_account_address->getAddress($this->session->data['payment_address']['address_id']);
             $shipping_address = $this->model_account_address->getAddress($this->session->data['shipping_address']['address_id']);
 
-            echo "payment address: " . $payment_address . "<br>";
-            echo "shipping address: " . $shipping_address . "<br>";
             $fields = array(
                 'firstname',
                 'lastname',
@@ -77,22 +75,21 @@ class ModelExtensionPaymentWirecardInstallment extends ModelExtensionPaymentWire
             }
         }
 
-
-	    $min_amount = $this->config->get($this->prefix.$this->payment_type.'_minAmount');
+	    $min_amount = $this->config->get('payment_'.$this->prefix.$this->payment_type.'_minAmount');
 	    if ( ! empty($min_amount) && $total < $min_amount) {
 		    return FALSE;
 	    }
 
-	    $max_amount = $this->config->get($this->prefix.$this->payment_type.'_maxAmount');
+	    $max_amount = $this->config->get('payment_'.$this->prefix.$this->payment_type.'_maxAmount');
 	    if ( ! empty($max_amount) && $total > $max_amount) {
 		    return FALSE;
 	    }
 
-	    $currencies = $this->config->get($this->prefix.$this->payment_type.'_currency');
+	    $currencies = $this->config->get('payment_'.$this->prefix.$this->payment_type.'_currency');
 	    if ( ! empty($currencies) && ! in_array($this->session->data['currency'], $currencies)) {
 		    return FALSE;
 	    }
-	    $country_ids = $this->config->get($this->prefix.$this->payment_type.'_country');
+	    $country_ids = $this->config->get('payment_'.$this->prefix.$this->payment_type.'_country');
 	    if ( ! empty($country_ids) && ! in_array($this->session->data['payment_address']['country_id'], $country_ids)) {
 		    return FALSE;
 	    }
