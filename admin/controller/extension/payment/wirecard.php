@@ -165,7 +165,7 @@ class ControllerExtensionPaymentWirecard extends Controller
 
         $data['breadcrumbs'][] = array(
             'text' => $this->language->get('text_payment'),
-            'href' => $this->url->link('marketplace/payment',
+            'href' => $this->url->link('marketplace/extension',
                 'user_token=' . $this->session->data['user_token'] . '&type=payment', true)
         );
 
