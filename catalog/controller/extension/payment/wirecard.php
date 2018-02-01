@@ -78,7 +78,7 @@ class ControllerExtensionPaymentWirecard extends Controller
         $data['send_order'] = $this->language->get('send_order');
         $data['error_init'] = $this->language->get('error_init');
 
-	    $data['wcp_ratepay'] = $this->loadRatePay();
+	    $data['wcp_ratepay'] = $this->loadRatePay($prefix);
 
         // Set Action URI
         $data['action'] = $this->url->link('extension/payment/' . $prefix . '/init', '', 'SSL');
@@ -98,11 +98,15 @@ class ControllerExtensionPaymentWirecard extends Controller
 	 *
 	 * @return string
 	 */
-    public function loadRatePay()
+    public function loadRatePay($prefix)
     {
+        if ($this->config->get('payment_'.$prefix.'_provider') !== 'ratepay') {
+            return;
+        }
+
 	    $customerId = $this->config->get('customerId');
 
-	    if(isset($_SESSION['wcpConsumerDeviceId'])) {
+	    if (isset($_SESSION['wcpConsumerDeviceId'])) {
 		    $consumerDeviceId = $_SESSION['wcpConsumerDeviceId'];
 	    } else {
 		    $timestamp = microtime();
