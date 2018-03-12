@@ -51,11 +51,17 @@ class ModelExtensionPaymentWirecardInstallment extends ModelExtensionPaymentWire
      */
     public function getMethod($address, $total)
     {
+
         if ($this->cart->hasShipping()) {
             $this->load->model('account/address');
 
-            $payment_address = $this->model_account_address->getAddress($this->session->data['payment_address']['address_id']);
-            $shipping_address = $this->model_account_address->getAddress($this->session->data['shipping_address']['address_id']);
+            if (isset($this->session->data['guest'])) {
+                $payment_address = $this->model_account_address->getAddress($this->session->data['guest']['shipping_address']);
+                $shipping_address = $this->model_account_address->getAddress($this->session->data['guest']['shipping_address']);
+            } else {
+                $payment_address = $this->model_account_address->getAddress($this->session->data['payment_address']['address_id']);
+                $shipping_address = $this->model_account_address->getAddress($this->session->data['shipping_address']['address_id']);
+            }
 
             $fields = array(
                 'firstname',
@@ -75,24 +81,24 @@ class ModelExtensionPaymentWirecardInstallment extends ModelExtensionPaymentWire
             }
         }
 
-	    $min_amount = $this->config->get('payment_'.$this->prefix.$this->payment_type.'_minAmount');
-	    if ( ! empty($min_amount) && $total < $min_amount) {
-		    return FALSE;
-	    }
+        $min_amount = $this->config->get('payment_'.$this->prefix.$this->payment_type.'_minAmount');
+        if ( ! empty($min_amount) && $total < $min_amount) {
+            return FALSE;
+        }
 
-	    $max_amount = $this->config->get('payment_'.$this->prefix.$this->payment_type.'_maxAmount');
-	    if ( ! empty($max_amount) && $total > $max_amount) {
-		    return FALSE;
-	    }
+        $max_amount = $this->config->get('payment_'.$this->prefix.$this->payment_type.'_maxAmount');
+        if ( ! empty($max_amount) && $total > $max_amount) {
+            return FALSE;
+        }
 
-	    $currencies = $this->config->get('payment_'.$this->prefix.$this->payment_type.'_currency');
-	    if ( ! empty($currencies) && ! in_array($this->session->data['currency'], $currencies)) {
-		    return FALSE;
-	    }
-	    $country_ids = $this->config->get('payment_'.$this->prefix.$this->payment_type.'_country');
-	    if ( ! empty($country_ids) && ! in_array($this->session->data['payment_address']['country_id'], $country_ids)) {
-		    return FALSE;
-	    }
+        $currencies = $this->config->get('payment_'.$this->prefix.$this->payment_type.'_currency');
+        if ( ! empty($currencies) && ! in_array($this->session->data['currency'], $currencies)) {
+            return FALSE;
+        }
+        $country_ids = $this->config->get('payment_'.$this->prefix.$this->payment_type.'_country');
+        if ( ! empty($country_ids) && ! in_array($this->session->data['payment_address']['country_id'], $country_ids)) {
+            return FALSE;
+        }
 
         return parent::getMethod($address, $total);
     }
