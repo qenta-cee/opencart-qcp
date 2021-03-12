@@ -2,9 +2,8 @@
 /**
  * Shop System Plugins - Terms of Use
  *
- * The plugins offered are provided free of charge by Wirecard Central Eastern
- * Europe GmbH
- * (abbreviated to Wirecard CEE) and are explicitly not part of the Wirecard
+ * The plugins offered are provided free of charge by QENTA Payment CEE GmbH
+ * (abbreviated to QENTA) and are explicitly not part of the QENTA
  * CEE range of products and services.
  *
  * They have been tested and approved for full functionality in the standard
@@ -13,16 +12,16 @@
  * General Public License Version 2 (GPLv2) and can be used, developed and
  * passed on to third parties under the same terms.
  *
- * However, Wirecard CEE does not provide any guarantee or accept any liability
+ * However, QENTA does not provide any guarantee or accept any liability
  * for any errors occurring when used in an enhanced, customized shop system
  * configuration.
  *
  * Operation in an enhanced, customized configuration is at your own risk and
  * requires a comprehensive test phase by the user of the plugin.
  *
- * Customers use the plugins at their own risk. Wirecard CEE does not guarantee
- * their full functionality neither does Wirecard CEE assume liability for any
- * disadvantages related to the use of the plugins. Additionally, Wirecard CEE
+ * Customers use the plugins at their own risk. QENTA does not guarantee
+ * their full functionality neither does QENTA assume liability for any
+ * disadvantages related to the use of the plugins. Additionally, QENTA
  * does not guarantee the full functionality for customized shop systems or
  * installed plugins of other vendors of plugins within the same shop system.
  *
@@ -35,7 +34,7 @@
  */
 
 $_['heading_title'] = 'Wirecard Checkout Page Kauf auf Rechnung';
-$_['text_wirecard_invoice'] = '<a href="http://www.wirecard.at/" target="_blank"><img src="view/image/payment/wirecard.png" alt="Wirecard" title="Wirecard CEE" /></a>';
+$_['text_wirecard_invoice'] = '<a href="http://www.wirecard.at/" target="_blank"><img src="view/image/payment/wirecard.png" alt="Wirecard" title="QENTA" /></a>';
 
 $_['provider_title'] = 'Provider für Kauf auf Rechnung';
 $_['provider_descript'] = 'Wählen Sie Ihren Kauf auf Rechnung Provider aus';
