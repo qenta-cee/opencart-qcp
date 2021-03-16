@@ -1,10 +1,9 @@
 {#
 Shop System Plugins - Terms of Use
 
-The plugins offered are provided free of charge by Wirecard Central Eastern
-Europe GmbH
-(abbreviated to QENTA) and are explicitly not part of the Wirecard
-CEE range of products and services.
+The plugins offered are provided free of charge by QENTA Payment CEE GmbH
+(abbreviated to QENTA) and are explicitly not part of the QENTA range 
+of products and services.
 
 They have been tested and approved for full functionality in the standard
 configuration
@@ -33,11 +32,11 @@ terms of use. Please do not use the plugin if you do not agree to these
 terms of use!
 #}
 
-{{ wcp_ratepay }}
-<form action="{{ action }}" method="post" name="wirecard_checkout_page_send" id="payment">
-    <input type="hidden" name="wirecard_checkout_page_window_name" value="{{ window_name }}">
+{{ header }}{{ column_left }}{{ column_right }}
+<div id="content">
+    {{ content_top }}
 
-    <div class="pull-right">
-        <input type="submit" class="btn btn-primary" value="{{ send_order }}">
-    </div>
-</form>
+    <script type="text/javascript">location.href = {{ action }}</script>
+    {{ content_bottom }}
+</div>
+{{ footer }}

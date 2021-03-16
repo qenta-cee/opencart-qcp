@@ -1,10 +1,9 @@
 {#
 Shop System Plugins - Terms of Use
 
-The plugins offered are provided free of charge by Wirecard Central Eastern
-Europe GmbH
-(abbreviated to QENTA) and are explicitly not part of the Wirecard
-CEE range of products and services.
+The plugins offered are provided free of charge by QENTA Payment CEE GmbH
+(abbreviated to QENTA) and are explicitly not part of the QENTA range of
+products and services.
 
 They have been tested and approved for full functionality in the standard
 configuration
@@ -33,23 +32,11 @@ terms of use. Please do not use the plugin if you do not agree to these
 terms of use!
 #}
 
-{{ wcp_ratepay }}
-<form class="form-horizontal" action="{{ action }}" method="post" name="wirecard_checkout_page_send" id="payment">
-    <input type="hidden" name="wirecard_checkout_page_window_name" value="{{ window_name }}">
-    <fieldset id="payment">
-        <legend>{{ text_title }}</legend>
-        <div class="form-group required">
-            <label class="col-sm-2 control-label" for="wcp_financialinstitution">{{ text_financialinstitution }}</label>
-            <div class="col-sm-3">
-                <select name="wcp_financialinstitution" id="input-wcp-financialinstitution" class="form-control required" required="required">
-                    {% for key, value in select_financialinstitution %}
-                        <option value="{{ key }}">{{ value }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
-    </fieldset>
+{{ qcp_ratepay }}
+<form action="{{ action }}" method="post" name="qenta_checkout_page_send" id="payment">
+    <input type="hidden" name="qenta_checkout_page_window_name" value="{{ window_name }}">
+
     <div class="pull-right">
-        <input type="submit" class="btn btn-primary" id="button-confirm" value="{{ button_confirm }}" />
+        <input type="submit" class="btn btn-primary" value="{{ send_order }}">
     </div>
 </form>
