@@ -13,7 +13,7 @@ QENTA Checkout Page plugin for OpenCart.
 Our [Online Guides](https://guides.qenta.com/) provide further information on payment methods and additional features. Please observe our [terms of use](https://guides.qenta.com/shop_plugins:info#terms_of_use) regarding plugins.
 
 ## Installation
-Our [Online Guides](https://guides.qenta.com/shop_plugins:opencart_wcp:start "Installation details") also provide technical documentation, installation and configuration instructions for the extension.
+Our [Online Guides](https://guides.qenta.com/shop_plugins:opencart_qcp:start "Installation details") also provide technical documentation, installation and configuration instructions for the extension.
 
 
 ## QPAY Checkout Page
