@@ -35,14 +35,10 @@
 
 // Load main controller
 $dir = dirname(__FILE__);
-require_once($dir . '/wirecard.php');
+require_once($dir . '/qenta.php');
 
-class ControllerExtensionPaymentWirecardMasterpass extends ControllerExtensionPaymentWirecard
+class ControllerExtensionPaymentQentaPsc extends ControllerExtensionPaymentQenta
 {
-    private $error = array();
-
-    // define payment type
-    public $payment_type_prefix = '_masterpass';
-
-    public $payment_type = WirecardCEE_QPay_PaymentType::MASTERPASS;
+    public $payment_type_prefix = '_psc';
+    public $payment_type = QentaCEE\Qpay\PaymentType::PSC;
 }

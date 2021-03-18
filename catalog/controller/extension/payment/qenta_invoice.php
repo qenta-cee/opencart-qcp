@@ -35,28 +35,28 @@
 
 // Load main controller
 $dir = dirname(__FILE__);
-require_once($dir . '/wirecard.php');
+require_once($dir . '/qenta.php');
 
-class ControllerExtensionPaymentWirecardInvoice extends ControllerExtensionPaymentWirecard
+class ControllerExtensionPaymentQentaInvoice extends ControllerExtensionPaymentQenta
 {
     public $payment_type_prefix = '_invoice';
-    public $payment_type = WirecardCEE_QPay_PaymentType::INVOICE;
+    public $payment_type = QentaCEE\Qpay\PaymentType::INVOICE;
 
 	public function index() {
-		$prefix = 'wirecard'.$this->payment_type_prefix;
+		$prefix = 'qenta'.$this->payment_type_prefix;
 
 		// Load required files
 		$this->load->model('checkout/order');
-		$this->load->model('extension/payment/wirecard');
+		$this->load->model('extension/payment/qenta');
 
-		$this->load->language('extension/payment/wirecard');
+		$this->load->language('extension/payment/qenta');
 		$this->load->language('extension/payment/'.$prefix);
 
 		// additional Data
 		$data['button_confirm'] = $this->language->get('button_confirm');
-		$data['window_name']    = $this->model_extension_payment_wirecard->get_window_name();
+		$data['window_name']    = $this->model_extension_payment_qenta->get_window_name();
 
-		$template                          = 'wirecard_invoice';
+		$template                          = 'qenta_invoice';
 		$data['provider']                  = $this->config->get('payment_'.$prefix.'_provider');
 		$data['terms']                     = $this->config->get('payment_'.$prefix.'_terms');
 		$data['mId']                       = $this->config->get('payment_'.$prefix.'_mId');
@@ -75,7 +75,7 @@ class ControllerExtensionPaymentWirecardInvoice extends ControllerExtensionPayme
 		$data['send_order'] = $this->language->get('send_order');
 		$data['error_init'] = $this->language->get('error_init');
 
-		$data['wcp_ratepay'] = $this->loadRatePay($prefix);
+		$data['qcp_ratepay'] = $this->loadRatePay($prefix);
 		// Set Action URI
 		$data['action'] = $this->url->link('extension/payment/'.$prefix.'/init', '', 'SSL');
 

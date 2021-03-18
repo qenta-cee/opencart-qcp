@@ -33,17 +33,17 @@
  * terms of use!
  */
 
-ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . DIR_SYSTEM . '/library/wirecard');
+ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . DIR_SYSTEM . '/library/qenta');
 
 require_once 'vendor/autoload.php';
 
-class ControllerExtensionPaymentWirecard extends Controller
+class ControllerExtensionPaymentQenta extends Controller
 {
     protected $data = array();
 
-    private $pluginVersion = '2.0.1';
+    private $pluginVersion = '3.0.0';
 
-    private $prefix = 'wirecard';
+    private $prefix = 'qenta';
 
     const INVOICE_INSTALLMENT_MIN_AGE = 18;
 
@@ -59,25 +59,25 @@ class ControllerExtensionPaymentWirecard extends Controller
 
         // Load required files
         $this->load->model('checkout/order');
-        $this->load->model('extension/payment/wirecard');
+        $this->load->model('extension/payment/qenta');
 
-        if ($prefix != 'wirecard') {
-            $this->load->language('extension/payment/wirecard');
+        if ($prefix != 'qenta') {
+            $this->load->language('extension/payment/qenta');
         }
 
         $this->load->language('extension/payment/' . $prefix);
 
         // additional Data
         $data['button_confirm'] = $this->language->get('button_confirm');
-        $data['window_name'] = $this->model_extension_payment_wirecard->get_window_name();
+        $data['window_name'] = $this->model_extension_payment_qenta->get_window_name();
 
         // Set Template
-	    $template = 'wirecard_init';
+	    $template = 'qenta_init';
 
         $data['send_order'] = $this->language->get('send_order');
         $data['error_init'] = $this->language->get('error_init');
 
-	    $data['wcp_ratepay'] = $this->loadRatePay($prefix);
+	    $data['qcp_ratepay'] = $this->loadRatePay($prefix);
 
         // Set Action URI
         $data['action'] = $this->url->link('extension/payment/' . $prefix . '/init', '', 'SSL');
@@ -105,12 +105,12 @@ class ControllerExtensionPaymentWirecard extends Controller
 
 	    $customerId = $this->config->get('customerId');
 
-	    if (isset($_SESSION['wcpConsumerDeviceId'])) {
-		    $consumerDeviceId = $_SESSION['wcpConsumerDeviceId'];
+	    if (isset($_SESSION['qcpConsumerDeviceId'])) {
+		    $consumerDeviceId = $_SESSION['qcpConsumerDeviceId'];
 	    } else {
 		    $timestamp = microtime();
 		    $consumerDeviceId = md5($customerId . "_" . $timestamp);
-		    $_SESSION['wcpConsumerDeviceId'] = $consumerDeviceId;
+		    $_SESSION['qcpConsumerDeviceId'] = $consumerDeviceId;
 	    }
 	    $ratepay = '<script language="JavaScript">var di = {t:"'.$consumerDeviceId.'",v:"WDWL",l:"Checkout"};</script>';
 	    $ratepay .= '<script type="text/javascript" src="//d.ratepay.com/'.$consumerDeviceId.'/di.js"></script>';
@@ -125,16 +125,16 @@ class ControllerExtensionPaymentWirecard extends Controller
      */
     public function init()
     {
-        if (isset($_POST['wirecard_checkout_page_window_name'])) {
-            $data['window_name'] = $_POST['wirecard_checkout_page_window_name'];
+        if (isset($_POST['qenta_checkout_page_window_name'])) {
+            $data['window_name'] = $_POST['qenta_checkout_page_window_name'];
         }
 
-        if (($this->payment_type == WirecardCEE_QPay_PaymentType::INSTALLMENT || $this->payment_type == WirecardCEE_QPay_PaymentType::INVOICE) && !isset($_POST['birthday'])) {
+        if (($this->payment_type == QentaCEE\Qpay\PaymentType::INSTALLMENT || $this->payment_type == QentaCEE\Qpay\PaymentType::INVOICE) && !isset($_POST['birthday'])) {
             $this->checkout();
         }
 
         $birthday = null;
-        if ($this->payment_type == WirecardCEE_QPay_PaymentType::INSTALLMENT || $this->payment_type == WirecardCEE_QPay_PaymentType::INVOICE) {
+        if ($this->payment_type == QentaCEE\Qpay\PaymentType::INSTALLMENT || $this->payment_type == QentaCEE\Qpay\PaymentType::INVOICE) {
             $birthday = date_create($_POST['birthday']);
             if (!$birthday) {
                 $this->checkout();
@@ -148,9 +148,9 @@ class ControllerExtensionPaymentWirecard extends Controller
         }
 
 	    $financial_institution = NULL;
-	    if ($this->payment_type == WirecardCEE_QPay_PaymentType::IDL || $this->payment_type == WirecardCEE_QPay_PaymentType::EPS) {
-		    if (isset($_POST['wcp_financialinstitution'])) {
-			    $financial_institution = $_POST['wcp_financialinstitution'];
+	    if ($this->payment_type == QentaCEE\Qpay\PaymentType::IDL || $this->payment_type == QentaCEE\Qpay\PaymentType::EPS) {
+		    if (isset($_POST['qcp_financialinstitution'])) {
+			    $financial_institution = $_POST['qcp_financialinstitution'];
 		    }
 	    }
 
@@ -159,10 +159,10 @@ class ControllerExtensionPaymentWirecard extends Controller
 
         // Load required files
         $this->load->model('checkout/order');
-        $this->load->model('extension/payment/wirecard');
+        $this->load->model('extension/payment/qenta');
 
-        if ($prefix != 'wirecard') {
-            $this->language->load('extension/payment/wirecard');
+        if ($prefix != 'qenta') {
+            $this->language->load('extension/payment/qenta');
         }
 
         $this->language->load('extension/payment/' . $prefix);
@@ -177,17 +177,17 @@ class ControllerExtensionPaymentWirecard extends Controller
         // additional Data
         $data['button_confirm'] = $this->language->get('button_confirm');
         $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-        $pluginVersion = WirecardCEE_QPay_FrontendClient::generatePluginVersion($order_info['store_name'], VERSION,
-            'Opencart Wirecard Checkout Page', $this->pluginVersion);
+        $pluginVersion = QentaCEE\QPay\FrontendClient::generatePluginVersion($order_info['store_name'], VERSION,
+            'Opencart QENTA Checkout Page', $this->pluginVersion);
 
         // set fields, optional, comsumer, generate fingerprint, send request, redirect
         // user
-        $result = $this->model_extension_payment_wirecard->sendRequest($prefix, $paymentType, $order_info, $birthday,
+        $result = $this->model_extension_payment_qenta->sendRequest($prefix, $paymentType, $order_info, $birthday,
             $pluginVersion, $financial_institution);
 
-	    $template = 'wirecard';
-        // If connection to wirecard success set template
-	    if($result instanceof WirecardCEE_QPay_Error) {
+	    $template = 'qenta';
+        // If connection to qenta success set template
+	    if($result instanceof QentaCEE\QPay\Error) {
 		    $this->session->data['error'] = $result->getMessage();
 		    $this->checkout();
 	    }
@@ -196,7 +196,7 @@ class ControllerExtensionPaymentWirecard extends Controller
 
             // Check if iframe is active
             if ($this->config->get('payment_' . $prefix . '_iframe') == '1') {
-                $template = 'wirecard_iframe';
+                $template = 'qenta_iframe';
             } else {
                 $this->response->redirect($data['action']);
             }
@@ -234,15 +234,15 @@ class ControllerExtensionPaymentWirecard extends Controller
 
         // Load required files
         $this->load->model('checkout/order');
-        $this->load->model('extension/payment/wirecard');
+        $this->load->model('extension/payment/qenta');
 
-        $this->model_extension_payment_wirecard->writeLog('confirm_request:' . print_r($_REQUEST, true));
+        $this->model_extension_payment_qenta->writeLog('confirm_request:' . print_r($_REQUEST, true));
 
         $message = null;
         if (!isset($_REQUEST['opencartOrderId']) || !strlen($_REQUEST['opencartOrderId'])) {
             $message = 'order-id missing';
-            $this->model_extension_payment_wirecard->writeLog($message);
-            return WirecardCEE_QPay_ReturnFactory::generateConfirmResponseString($message);
+            $this->model_extension_payment_qenta->writeLog($message);
+            return QentaCEE\QPay\ReturnFactory::generateConfirmResponseString($message);
         }
         $order_id = $_REQUEST['opencartOrderId'];
 
@@ -273,19 +273,19 @@ class ControllerExtensionPaymentWirecard extends Controller
 
         $message = null;
         try {
-            $return = WirecardCEE_QPay_ReturnFactory::getInstance($_POST, $this->config->get($prefix . '_secret'));
+            $return = QentaCEE\QPay\ReturnFactory::getInstance($_POST, $this->config->get($prefix . '_secret'));
             if (!$return->validate()) {
                 $message = 'Validation error: invalid response';
                 $this->model_checkout_order->addOrderHistory($order_id, $failureStatus);
                 $this->model_checkout_order->writeLog($message);
-                return WirecardCEE_QPay_ReturnFactory::generateConfirmResponseString($message);
+                return QentaCEE\QPay\ReturnFactory::generateConfirmResponseString($message);
             }
 
             /**
-             * @var $return WirecardCEE_Stdlib_Return_ReturnAbstract
+             * @var $return QentaCEE\Stdlib\Return\ReturnAbstract
              */
             switch ($return->getPaymentState()) {
-                case WirecardCEE_QPay_ReturnFactory::STATE_SUCCESS:
+                case QentaCEE\QPay\ReturnFactory::STATE_SUCCESS:
                     // for pending requests, confirm is already done, the model does only one
                     // confirm,
                     // so do an update in this case
@@ -296,24 +296,24 @@ class ControllerExtensionPaymentWirecard extends Controller
                         $this->model_checkout_order->addOrderHistory($order_id, $successStatus, $comment, true);
                     }
                     break;
-                case WirecardCEE_QPay_ReturnFactory::STATE_PENDING:
+                case QentaCEE\QPay\ReturnFactory::STATE_PENDING:
                     /**
-                     * @var $return WirecardCEE_QPay_Return_Pending
+                     * @var $return QentaCEE\QPay\Return\Pending
                      */
                     $this->model_checkout_order->addOrderHistory($order_id, $pendingStatus, $comment, true);
                     break;
                 // we can do nothing here, confirm() always sends the notification email
                 // the update() method doese nothing if the order has not been confirmed yet
                 // see catalog/model/checkout/order.php
-                case WirecardCEE_QPay_ReturnFactory::STATE_CANCEL:
+                case QentaCEE\QPay\ReturnFactory::STATE_CANCEL:
                     /**
-                     * @var $return WirecardCEE_QPay_Return_Cancel
+                     * @var $return QentaCEE\QPay\Return\Cancel
                      */
                     break;
 
-                case WirecardCEE_QPay_ReturnFactory::STATE_FAILURE:
+                case QentaCEE\QPay\ReturnFactory::STATE_FAILURE:
                     /**
-                     * @var $return WirecardCEE_QPay_Return_Failure
+                     * @var $return QentaCEE\QPay\Return\Failure
                      */
                     break;
 
@@ -322,9 +322,9 @@ class ControllerExtensionPaymentWirecard extends Controller
             }
         } catch (Exception $e) {
             $this->model_checkout_order->addOrderHistory($order_id, $failureStatus);
-            $this->model_extension_payment_wirecard->writeLog($e->getMessage());
+            $this->model_extension_payment_qenta->writeLog($e->getMessage());
         }
-        echo WirecardCEE_QPay_ReturnFactory::generateConfirmResponseString($message);
+        echo QentaCEE\QPay\ReturnFactory::generateConfirmResponseString($message);
     }
 
 	private function editOrder( $order_id, $data ) {

@@ -35,47 +35,34 @@
 
 // Load main controller
 $dir = dirname(__FILE__);
-require_once($dir . '/wirecard.php');
+require_once($dir . '/qenta.php');
 
-class ControllerExtensionPaymentWirecardInstallment extends ControllerExtensionPaymentWirecard
+class ControllerExtensionPaymentQentaEps extends ControllerExtensionPaymentQenta
 {
-    public $payment_type_prefix = '_installment';
-    public $payment_type = WirecardCEE_QPay_PaymentType::INSTALLMENT;
+    public $payment_type_prefix = '_eps';
+    public $payment_type = QentaCEE\Qpay\PaymentType::EPS;
 
 	public function index() {
-		$prefix = 'wirecard'.$this->payment_type_prefix;
+		$prefix = 'qenta'.$this->payment_type_prefix;
 
 		// Load required files
 		$this->load->model('checkout/order');
-		$this->load->model('extension/payment/wirecard');
+		$this->load->model('extension/payment/qenta');
 
-		$this->load->language('extension/payment/wirecard');
+		$this->load->language('extension/payment/qenta');
 		$this->load->language('extension/payment/'.$prefix);
 
 		// additional Data
 		$data['button_confirm'] = $this->language->get('button_confirm');
-		$data['window_name']    = $this->model_extension_payment_wirecard->get_window_name();
+		$data['window_name']    = $this->model_extension_payment_qenta->get_window_name();
 
-		$template                          = 'wirecard_installment';
-		$data['provider']                  = $this->config->get('paymnet_'.$prefix.'_provider');
-		$data['terms']                     = $this->config->get('paymnet_'.$prefix.'_terms');
-		$data['mId']                       = $this->config->get('paymnet_'.$prefix.'_mId');
+		$template                          = 'qenta_eps';
 		$data['text_title']                = $this->language->get('text_title');
-		$data['text_birthday']             = $this->language->get('text_birthday');
-		$data['text_birthday_information'] = $this->language->get('text_birthday_information');
-		$data['text_payolution_title']     = $this->language->get('text_payolution_title');
-		$data['text_payolution_consent1']  = $this->language->get('text_payolution_consent1');
-		$data['text_payolution_consent2']  = $this->language->get('text_payolution_consent2');
-		$data['text_payolution_link']      = $this->language->get('text_payolution_link');
+		$data['text_financialinstitution'] = $this->language->get('text_financialinstitution');
+		$data['select_financialinstitution'] = QentaCEE\Qpay\PaymentType::getFinancialInstitutions('EPS');
 
-		$data['years']  = range(date('Y'), date('Y') - 100);
-		$data['days']   = range(1, 31);
-		$data['months'] = range(1, 12);
-
-		$data['send_order'] = $this->language->get('send_order');
 		$data['error_init'] = $this->language->get('error_init');
 
-		$data['wcp_ratepay'] = $this->loadRatePay($prefix);
 		// Set Action URI
 		$data['action'] = $this->url->link('extension/payment/'.$prefix.'/init', '', 'SSL');
 

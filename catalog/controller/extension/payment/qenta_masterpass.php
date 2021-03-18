@@ -35,44 +35,14 @@
 
 // Load main controller
 $dir = dirname(__FILE__);
-require_once($dir . '/wirecard.php');
+require_once($dir . '/qenta.php');
 
-class ControllerExtensionPaymentWirecardIdl extends ControllerExtensionPaymentWirecard
+class ControllerExtensionPaymentQentaMasterpass extends ControllerExtensionPaymentQenta
 {
-    public $payment_type_prefix = '_idl';
-    public $payment_type = WirecardCEE_QPay_PaymentType::IDL;
+    private $error = array();
 
-	public function index() {
-		$prefix = 'wirecard'.$this->payment_type_prefix;
+    // define payment type
+    public $payment_type_prefix = '_masterpass';
 
-		// Load required files
-		$this->load->model('checkout/order');
-		$this->load->model('extension/payment/wirecard');
-
-		$this->load->language('extension/payment/wirecard');
-		$this->load->language('extension/payment/'.$prefix);
-
-		// additional Data
-		$data['button_confirm'] = $this->language->get('button_confirm');
-		$data['window_name']    = $this->model_extension_payment_wirecard->get_window_name();
-
-		$template                          = 'wirecard_idl';
-		$data['text_title']                = $this->language->get('text_title');
-		$data['text_financialinstitution'] = $this->language->get('text_financialinstitution');
-		$data['select_financialinstitution'] = WirecardCEE_QPay_PaymentType::getFinancialInstitutions('IDL');
-
-		$data['error_init'] = $this->language->get('error_init');
-
-		// Set Action URI
-		$data['action'] = $this->url->link('extension/payment/'.$prefix.'/init', '', 'SSL');
-
-		// Template Output
-		if (file_exists(DIR_TEMPLATE.$this->config->get('config_template').'/template/extension/payment/'.$template)) {
-			$this->template = $this->config->get('config_template').'/template/extension/payment/'.$template;
-		} else {
-			$this->template = 'extension/payment/'.$template;
-		}
-
-		return $this->load->view($this->template, $data);
-	}
+    public $payment_type = QentaCEE\Qpay\PaymentType::MASTERPASS;
 }

@@ -35,10 +35,10 @@
 
 // Load main controller
 $dir = dirname(__FILE__);
-require_once($dir . '/wirecard.php');
+require_once($dir . '/qenta.php');
 
-class ControllerExtensionPaymentWirecardPaypal extends ControllerExtensionPaymentWirecard
+class ControllerExtensionPaymentQentaEkonto extends ControllerExtensionPaymentQenta
 {
-    public $payment_type_prefix = '_paypal';
-    public $payment_type = WirecardCEE_QPay_PaymentType::PAYPAL;
+    public $payment_type_prefix = '_ekonto';
+    public $payment_type = QentaCEE\Qpay\PaymentType::EKONTO;
 }
