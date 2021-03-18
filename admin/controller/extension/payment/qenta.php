@@ -33,12 +33,12 @@
  * terms of use. Please do not use the plugin if you do not agree to these
  * terms of use!
  */
-class ControllerExtensionPaymentWirecard extends Controller
+class ControllerExtensionPaymentQenta extends Controller
 {
     private $error = array();
 
     // define plugin prefix
-    protected $prefix = 'payment_wirecard';
+    protected $prefix = 'payment_qenta';
 
     // define input fields
     protected $arrayInputFields = array(
@@ -79,8 +79,8 @@ class ControllerExtensionPaymentWirecard extends Controller
         $this->load->model('setting/setting');
         $this->load->model('localisation/order_status');
 
-        $this->load->language('extension/payment/wirecard');
-        $this->load->language('extension/payment/wirecard' . $this->payment_type);
+        $this->load->language('extension/payment/qenta');
+        $this->load->language('extension/payment/qenta' . $this->payment_type);
 
         $data['boolHasValidationError'] = false;
 
@@ -120,7 +120,7 @@ class ControllerExtensionPaymentWirecard extends Controller
         $data['arrayLanguageText']['yes'] = $this->language->get('yes');
         $data['arrayLanguageText']['license_text'] = $this->language->get('license_text');
 	    $data['arrayLanguageText']['payolution'] = $this->language->get('payolution');
-	    $data['arrayLanguageText']['wirecard'] = $this->language->get('wirecard');
+	    $data['arrayLanguageText']['qenta'] = $this->language->get('qenta');
 	    $data['arrayLanguageText']['ratepay'] = $this->language->get('ratepay');
 
         //define input fields
@@ -170,10 +170,10 @@ class ControllerExtensionPaymentWirecard extends Controller
 
         $data['breadcrumbs'][] = array(
             'text' => $this->language->get('heading_title'),
-            'href' => $this->url->link('extension/payment/wirecard', 'user_token=' . $this->session->data['user_token'], true)
+            'href' => $this->url->link('extension/payment/qenta', 'user_token=' . $this->session->data['user_token'], true)
         );
 
-        $data['action'] = $this->url->link('extension/payment/wirecard' . $this->payment_type,
+        $data['action'] = $this->url->link('extension/payment/qenta' . $this->payment_type,
             'user_token=' . $this->session->data['user_token'],
             true);
 
@@ -189,7 +189,7 @@ class ControllerExtensionPaymentWirecard extends Controller
         $this->load->model('localisation/currency');
         $data['currencies'] = $this->model_localisation_currency->getCurrencies();
 
-        $this->response->setOutput($this->load->view('extension/payment/wirecard', $data));
+        $this->response->setOutput($this->load->view('extension/payment/qenta', $data));
     }
 
     /**
@@ -199,7 +199,7 @@ class ControllerExtensionPaymentWirecard extends Controller
      */
     protected function validate()
     {
-        if (!$this->user->hasPermission('modify', 'extension/payment/wirecard' . $this->payment_type)) {
+        if (!$this->user->hasPermission('modify', 'extension/payment/qenta' . $this->payment_type)) {
             $this->error['warning'] = $this->language->get('error_permission');
             return false;
         }

@@ -35,10 +35,10 @@
 
 // Load main controller
 $dir = dirname(__FILE__);
-require_once($dir . '/wirecard.php');
+require_once($dir . '/qenta.php');
 
-class ControllerExtensionPaymentWirecardVoucher extends ControllerExtensionPaymentWirecard
+class ControllerExtensionPaymentQentaGiropay extends ControllerExtensionPaymentQenta
 {
     // define payment type
-    public $payment_type = '_voucher';
+    public $payment_type = '_giropay';
 }

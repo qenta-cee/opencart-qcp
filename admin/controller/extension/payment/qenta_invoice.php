@@ -35,12 +35,12 @@
 
 // Load main controller
 $dir = dirname(__FILE__);
-require_once($dir . '/wirecard.php');
+require_once($dir . '/qenta.php');
 
-class ControllerExtensionPaymentWirecardInstallment extends ControllerExtensionPaymentWirecard
+class ControllerExtensionPaymentQentaInvoice extends ControllerExtensionPaymentQenta
 {
     // define payment type
-    public $payment_type = '_installment';
+    public $payment_type = '_invoice';
 
     // define input fields
     protected $arrayInputFields = array(
@@ -66,7 +66,7 @@ class ControllerExtensionPaymentWirecardInstallment extends ControllerExtensionP
         'basketData' => 'true_false',
         'provider' => 'select_provider',
         'terms' => 'true_false',
-        'mId' => 'input',
+	    'mId' => 'input',
         'minAmount' => 'input',
         'maxAmount' => 'input',
         'country' => 'select_country',
@@ -96,5 +96,4 @@ class ControllerExtensionPaymentWirecardInstallment extends ControllerExtensionP
 
         return $boolHasValidationError;
     }
-
 }
