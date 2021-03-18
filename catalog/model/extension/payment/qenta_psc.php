@@ -35,9 +35,9 @@
 
 // Load main controller
 $dir = dirname(__FILE__);
-require_once($dir . '/wirecard.php');
+require_once($dir . '/qenta.php');
 
-class ModelExtensionPaymentWirecardEpaybg extends ModelExtensionPaymentWirecard
+class ModelExtensionPaymentQentaPsc extends ModelExtensionPaymentQenta
 {
-    public $payment_type = '_epaybg';
+    public $payment_type = '_psc';
 }

@@ -35,9 +35,9 @@
 
 // Load main controller
 $dir = dirname(__FILE__);
-require_once($dir . '/wirecard.php');
+require_once($dir . '/qenta.php');
 
-class ModelExtensionPaymentWirecardGiropay extends ModelExtensionPaymentWirecard
+class ModelExtensionPaymentQentaSkrillWallet extends ModelExtensionPaymentQenta
 {
-    public $payment_type = '_giropay';
+    public $payment_type = '_skrillwallet';
 }

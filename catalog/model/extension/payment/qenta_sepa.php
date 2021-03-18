@@ -35,9 +35,9 @@
 
 // Load main controller
 $dir = dirname(__FILE__);
-require_once($dir . '/wirecard.php');
+require_once($dir . '/qenta.php');
 
-class ModelExtensionPaymentWirecardPbx extends ModelExtensionPaymentWirecard
+class ModelExtensionPaymentQentaSepa extends ModelExtensionPaymentQenta
 {
-    public $payment_type = '_pbx';
+    public $payment_type = '_sepa';
 }
