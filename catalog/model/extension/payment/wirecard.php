@@ -372,7 +372,7 @@ class ModelExtensionPaymentWirecard extends Model
     public function writeLog($message)
     {
         $date = date("Y-m-d");
-        $log_path = DIR_SYSTEM . 'storage/logs/';
+        $log_path = DIR_STORAGE . 'logs/';
         $log_file = 'wirecard_log_' . $date . '.txt';
         $handle = fopen($log_path . $log_file, 'a+');
         fwrite($handle, $message . "\n");

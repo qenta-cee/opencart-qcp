@@ -58,9 +58,9 @@ class ControllerExtensionPaymentWirecardInstallment extends ControllerExtensionP
 		$data['window_name']    = $this->model_extension_payment_wirecard->get_window_name();
 
 		$template                          = 'wirecard_installment';
-		$data['provider']                  = $this->config->get('paymnet_'.$prefix.'_provider');
-		$data['terms']                     = $this->config->get('paymnet_'.$prefix.'_terms');
-		$data['mId']                       = $this->config->get('paymnet_'.$prefix.'_mId');
+		$data['provider']                  = $this->config->get('payment_'.$prefix.'_provider');
+		$data['terms']                     = $this->config->get('payment_'.$prefix.'_terms');
+		$data['mId']                       = $this->config->get('payment_'.$prefix.'_mId');
 		$data['text_title']                = $this->language->get('text_title');
 		$data['text_birthday']             = $this->language->get('text_birthday');
 		$data['text_birthday_information'] = $this->language->get('text_birthday_information');
