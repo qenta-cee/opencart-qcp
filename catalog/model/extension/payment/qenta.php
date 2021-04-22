@@ -33,14 +33,14 @@
  * terms of use!
  */
 
-ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . DIR_SYSTEM . '/library/wirecard');
+ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . DIR_SYSTEM . '/library/qenta');
 
 require_once 'vendor/autoload.php';
 
-class ModelExtensionPaymentWirecard extends Model
+class ModelExtensionPaymentQenta extends Model
 {
     // define prefix
-    protected $prefix = 'wirecard';
+    protected $prefix = 'qenta';
 
     // define fields for foreach
     // call : set_fields
@@ -54,7 +54,7 @@ class ModelExtensionPaymentWirecard extends Model
         'serviceUrl'
     );
 
-    const WINDOW_NAME = 'WirecardCheckoutPageFrame';
+    const WINDOW_NAME = 'QentaCheckoutPageFrame';
 
     /**
      * @param $address
@@ -134,16 +134,16 @@ class ModelExtensionPaymentWirecard extends Model
 
     /**
      * @param $order
-     * @param WirecardCEE_Stdlib_ConsumerData $consumer_data
+     * @param QentaCEE\Stdlib\ConsumerData $consumer_data
      *
      * set consumerdata
      */
-    public function setConsumerInformation($order, WirecardCEE_Stdlib_ConsumerData $consumer_data)
+    public function setConsumerInformation($order, QentaCEE\Stdlib\ConsumerData $consumer_data)
     {
 
         $consumer_data->setEmail($order['email']);
 
-        $billingAddress = new WirecardCEE_Stdlib_ConsumerData_Address(WirecardCEE_Stdlib_ConsumerData_Address::TYPE_BILLING);
+        $billingAddress = new QentaCEE\Stdlib\ConsumerData\Address(QentaCEE\Stdlib\ConsumerData\Address::TYPE_BILLING);
 
         $countryCode = $order['payment_iso_code_2'];
         $billingAddress->setFirstname($order['payment_firstname'])
@@ -161,7 +161,7 @@ class ModelExtensionPaymentWirecard extends Model
             $billingAddress->setState($order['payment_zone']);
         }
 
-        $shippingAddress = new WirecardCEE_Stdlib_ConsumerData_Address(WirecardCEE_Stdlib_ConsumerData_Address::TYPE_SHIPPING);
+        $shippingAddress = new QentaCEE\Stdlib\ConsumerData\Address(QentaCEE\Stdlib\ConsumerData\Address::TYPE_SHIPPING);
 
         if (!empty($order['shipping_firstname']) && !empty($order['shipping_lastname']) && !empty($order['shipping_lastname'])) {
             $countryCode = $order['shipping_iso_code_2'];
@@ -217,7 +217,7 @@ class ModelExtensionPaymentWirecard extends Model
                 $language_info = $language_info[0];
             }
 
-            $client = new WirecardCEE_QPay_FrontendClient(array(
+            $client = new QentaCEE\QPay\FrontendClient(array(
                 'CUSTOMER_ID' => $fields['customerId'],
                 'SHOP_ID' => $fields['shopId'],
                 'SECRET' => $fields['secret'],
@@ -225,7 +225,7 @@ class ModelExtensionPaymentWirecard extends Model
             ));
 
             // consumer data (IP and User agent) are mandatory!
-            $consumerData = new WirecardCEE_Stdlib_ConsumerData();
+            $consumerData = new QentaCEE\Stdlib\ConsumerData();
             $consumerData->setUserAgent($_SERVER['HTTP_USER_AGENT'])
                 ->setIpAddress($_SERVER['REMOTE_ADDR']);
 
@@ -237,13 +237,13 @@ class ModelExtensionPaymentWirecard extends Model
 		        $client->setFinancialInstitution($financialinstitution);
 	        }
 
-            if ($paymentType == WirecardCEE_QPay_PaymentType::MASTERPASS) {
+            if ($paymentType == QentaCEE\Qpay\PaymentType::MASTERPASS) {
                 $client->setShippingProfile('NO_SHIPPING');
             }
 
             if ($fields['sendConsumerInformation'] || in_array(
                     $paymentType,
-                    Array(WirecardCEE_QPay_PaymentType::INVOICE, WirecardCEE_QPay_PaymentType::INSTALLMENT)
+                    Array(QentaCEE\Qpay\PaymentType::INVOICE, QentaCEE\Qpay\PaymentType::INSTALLMENT)
                 )
             ) {
                 $this->setConsumerInformation($order, $consumerData);
@@ -277,13 +277,13 @@ class ModelExtensionPaymentWirecard extends Model
 	            ->setOrderReference($this->getOrderReference($order))
                 ->setLayout($strCustomerLayout);
 
-            if (isset($_SESSION['wcpConsumerDeviceId'])) {
-            	$client->consumerDeviceId = $_SESSION['wcpConsumerDeviceId'];
-            	unset($_SESSION['wcpConsumerDeviceId']);
+            if (isset($_SESSION['qcpConsumerDeviceId'])) {
+            	$client->consumerDeviceId = $_SESSION['qcpConsumerDeviceId'];
+            	unset($_SESSION['qcpConsumerDeviceId']);
             }
 	        if ($fields['sendBasketData'] ||
-		        ($paymentType == WirecardCEE_QPay_PaymentType::INVOICE && $this->config->get('payment_'.$prefix.'_provider') != 'payolution') ||
-		        ($paymentType == WirecardCEE_QPay_PaymentType::INSTALLMENT && $this->config->get('payment_'.$prefix.'_provider') != 'payolution')
+		        ($paymentType == QentaCEE\Qpay\PaymentType::INVOICE && $this->config->get('payment_'.$prefix.'_provider') != 'payolution') ||
+		        ($paymentType == QentaCEE\Qpay\PaymentType::INSTALLMENT && $this->config->get('payment_'.$prefix.'_provider') != 'payolution')
 	        ) {
 		        $client->setBasket($this->setBasketData($order['currency_code'], $order['currency_value']));
 	        }
@@ -308,22 +308,25 @@ class ModelExtensionPaymentWirecard extends Model
 	/**
 	 * Create basket items including shipping and fix taxes
 	 *
-	 * @return WirecardCEE_Stdlib_Basket
+	 * @return QentaCEE\Stdlib\Basket
 	 */
 	public function setBasketData($currencyCode, $currencyValue) {
-		$basket        = new WirecardCEE_Stdlib_Basket();
+		$basket        = new QentaCEE\Stdlib\Basket();
 		$basketContent = $this->cart;
 
 		$fix_tax = 0;
 		foreach ($basketContent->getProducts() as $cart_item_key => $cart_item) {
-			$item         = new WirecardCEE_Stdlib_Basket_Item($cart_item['product_id']);
-			$gross_amount = $this->tax->calculate($this->convert($cart_item['price'], $currencyCode, $currencyValue), $cart_item['tax_class_id'], 'P');
-			$tax_amount   = $gross_amount - $this->convert($cart_item['price'], $currencyCode, $currencyValue);
-			$item->setUnitGrossAmount($gross_amount)
-				->setUnitNetAmount($this->convert($cart_item['price'], $currencyCode, $currencyValue))
-				->setUnitTaxAmount($tax_amount)
-				->setUnitTaxRate($this->convert($tax_amount / $cart_item['price'] * 100, $currencyCode, $currencyValue))
-				->setUnitTaxRate($this->convert($tax_amount / $cart_item['price'] * 100, $currencyCode, $currencyValue))
+			$item         = new QentaCEE\Stdlib\Basket\Item($cart_item['product_id']);
+            $amount = [];
+            $amount['net'] = $this->convert($cart_item['price'], $currencyCode, $currencyValue);
+            $amount['gross'] = $this->tax->calculate($amount['net'], $cart_item['tax_class_id'], $this->config->get('config_tax'));
+            $amount['tax'] = $amount['gross'] - $amount['net'];
+            $amount['tax_rate'] = $this->convert($amount['tax'] / $cart_item['price'] * 100, $currencyCode, $currencyValue);
+
+			$item->setUnitGrossAmount($amount['gross'])
+				->setUnitNetAmount($amount['net'])
+				->setUnitTaxAmount($amount['tax'])
+				->setUnitTaxRate($amount['tax_rate'])
 				->setDescription(substr(utf8_decode($cart_item['name']), 0, 127))
 				->setName(substr(utf8_decode($cart_item['name']), 0, 127))
 				->setImageUrl($this->url->link($cart_item['image']));
@@ -336,20 +339,28 @@ class ModelExtensionPaymentWirecard extends Model
 		if (isset($this->session->data['shipping_method'])) {
 			$session_data    = $this->session->data;
 			$shipping_method = $session_data['shipping_method'];
-			$item            = new WirecardCEE_Stdlib_Basket_Item('shipping');
-			$item->setUnitGrossAmount($this->convertAndFormat($this->tax->calculate($shipping_method['cost'], $shipping_method['tax_class_id'], 'P'), $currencyCode, $currencyValue))
-				->setUnitNetAmount($this->convertAndFormat($shipping_method['cost'], $currencyCode, $currencyValue))
-				->setUnitTaxRate($this->convert($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']) / $shipping_method['cost'] * 100, $currencyCode, $currencyValue))
-				->setUnitTaxAmount($this->convertAndFormat($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']), $currencyCode, $currencyValue))
+
+            $shipping_amount = [];
+            $shipping_amount['gross'] = $this->tax->calculate($shipping_method['cost'], $shipping_method['tax_class_id'], $this->config->get('config_tax'));
+            $shipping_amount['net'] = $this->convert($shipping_method['cost'], $currencyCode, $currencyValue);
+            $shipping_amount['tax'] = $this->convert($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']), $currencyCode, $currencyValue);
+            $shipping_amount['tax_rate'] = $this->convert($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']) / $shipping_method['cost'] * 100, $currencyCode, $currencyValue);
+
+   
+			$item            = new QentaCEE\Stdlib\Basket\Item('shipping');
+			$item->setUnitGrossAmount($shipping_amount['gross'])
+				->setUnitNetAmount($shipping_amount['net'])
+				->setUnitTaxRate($shipping_amount['tax_rate'])
+				->setUnitTaxAmount($shipping_amount['tax'])
 				->setName('Shipping')
 				->setDescription('Shipping');
 			$basket->addItem($item);
 			$fix_tax += $this->tax->calculate($shipping_method['cost'], $shipping_method['tax_class_id'], 'F') - $shipping_method['cost'];
 		}
-
+/*
 		// Add fix tax as basket item
 		if ($fix_tax > 0) {
-			$item = new WirecardCEE_Stdlib_Basket_Item('FixTax');
+			$item = new QentaCEE\Stdlib\Basket\Item('FixTax');
 			$item->setUnitGrossAmount($this->convertAndFormat($fix_tax, $currencyCode, $currencyValue))
 				->setUnitNetAmount($this->convertAndFormat($fix_tax, $currencyCode, $currencyValue))
 				->setUnitTaxAmount($this->convertAndFormat(0, $currencyCode, $currencyValue))
@@ -358,8 +369,7 @@ class ModelExtensionPaymentWirecard extends Model
 				->setName('FixTax');
 
 			$basket->addItem($item, 1);
-		}
-
+		}*/
 		return $basket;
 	}
 
@@ -372,7 +382,7 @@ class ModelExtensionPaymentWirecard extends Model
     {
         $date = date("Y-m-d");
         $log_path = DIR_SYSTEM . 'storage/logs/';
-        $log_file = 'wirecard_log_' . $date . '.txt';
+        $log_file = 'qenta_log_' . $date . '.txt';
         $handle = fopen($log_path . $log_file, 'a+');
         fwrite($handle, $message . "\n");
         fclose($handle);
@@ -409,7 +419,7 @@ class ModelExtensionPaymentWirecard extends Model
     		return $this->config->get('payment_'.$prefix.'_customerStatement');
 	    }
         $customer_statement = sprintf('%9s', substr($order['store_name'], 0, 9));
-	    if ($payment_type != WirecardCEE_QPay_PaymentType::POLI) {
+	    if ($payment_type != QentaCEE\Qpay\PaymentType::POLI) {
 		    $customer_statement .= ' ' . $this->getOrderReference($order);
 	    }
 	    return $customer_statement;
@@ -429,7 +439,7 @@ class ModelExtensionPaymentWirecard extends Model
      */
     protected function getCustomerLayout()
     {
-        $objMobileDetect = new WirecardCEE_QPay_MobileDetect();
+        $objMobileDetect = new QentaCEE\QPay\MobileDetect();
         $layout = "desktop";
 
         if ($objMobileDetect->isMobile($_SERVER['HTTP_USER_AGENT']) === true) {
