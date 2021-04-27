@@ -3,10 +3,6 @@
     "description": "QENTA Checkout Page extension for Opencart 3",
     "type": "opencart-extension",
     "license": "GPLv3",
-    "authors": [{
-        "name": "Jakub Polomsky",
-        "email": "jakub.polomsky@qenta.com"
-    }],
     "homepage": "https://www.qenta-cee.at",
     "support": {
         "email": "support@qenta.com",
