@@ -37,6 +37,11 @@ ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . DIR_SYSTEM . 
 
 require_once 'vendor/autoload.php';
 
+use \QentaCEE\QPay\FrontendClient as QentaFrontendClient;
+use \QentaCEE\QPay\PaymentType;
+use \QentaCEE\Stdlib\Basket as QentaBasket;
+use \QentaCEE\Stdlib\ConsumerData as QentaConsumerData;
+
 class ModelExtensionPaymentQenta extends Model
 {
     // define prefix
@@ -134,16 +139,16 @@ class ModelExtensionPaymentQenta extends Model
 
     /**
      * @param $order
-     * @param QentaCEE\Stdlib\ConsumerData $consumer_data
+     * @param QentaConsumerData\ConsumerData $consumer_data
      *
      * set consumerdata
      */
-    public function setConsumerInformation($order, QentaCEE\Stdlib\ConsumerData $consumer_data)
+    public function setConsumerInformation($order, QentaConsumerData $consumer_data)
     {
 
         $consumer_data->setEmail($order['email']);
 
-        $billingAddress = new QentaCEE\Stdlib\ConsumerData\Address(QentaCEE\Stdlib\ConsumerData\Address::TYPE_BILLING);
+        $billingAddress = new QentaConsumerData\Address(QentaConsumerData\Address::TYPE_BILLING);
 
         $countryCode = $order['payment_iso_code_2'];
         $billingAddress->setFirstname($order['payment_firstname'])
@@ -161,7 +166,7 @@ class ModelExtensionPaymentQenta extends Model
             $billingAddress->setState($order['payment_zone']);
         }
 
-        $shippingAddress = new QentaCEE\Stdlib\ConsumerData\Address(QentaCEE\Stdlib\ConsumerData\Address::TYPE_SHIPPING);
+        $shippingAddress = new QentaConsumerData\Address(QentaConsumerData\Address::TYPE_SHIPPING);
 
         if (!empty($order['shipping_firstname']) && !empty($order['shipping_lastname']) && !empty($order['shipping_lastname'])) {
             $countryCode = $order['shipping_iso_code_2'];
@@ -217,7 +222,7 @@ class ModelExtensionPaymentQenta extends Model
                 $language_info = $language_info[0];
             }
 
-            $client = new QentaCEE\QPay\FrontendClient(array(
+            $client = new QentaFrontendClient(array(
                 'CUSTOMER_ID' => $fields['customerId'],
                 'SHOP_ID' => $fields['shopId'],
                 'SECRET' => $fields['secret'],
@@ -225,7 +230,7 @@ class ModelExtensionPaymentQenta extends Model
             ));
 
             // consumer data (IP and User agent) are mandatory!
-            $consumerData = new QentaCEE\Stdlib\ConsumerData();
+            $consumerData = new QentaConsumerData();
             $consumerData->setUserAgent($_SERVER['HTTP_USER_AGENT'])
                 ->setIpAddress($_SERVER['REMOTE_ADDR']);
 
@@ -237,13 +242,13 @@ class ModelExtensionPaymentQenta extends Model
 		        $client->setFinancialInstitution($financialinstitution);
 	        }
 
-            if ($paymentType == QentaCEE\Qpay\PaymentType::MASTERPASS) {
+            if ($paymentType == PaymentType::MASTERPASS) {
                 $client->setShippingProfile('NO_SHIPPING');
             }
 
             if ($fields['sendConsumerInformation'] || in_array(
                     $paymentType,
-                    Array(QentaCEE\Qpay\PaymentType::INVOICE, QentaCEE\Qpay\PaymentType::INSTALLMENT)
+                    Array(PaymentType::INVOICE, PaymentType::INSTALLMENT)
                 )
             ) {
                 $this->setConsumerInformation($order, $consumerData);
@@ -272,15 +277,15 @@ class ModelExtensionPaymentQenta extends Model
                 ->setMaxRetries($fields['maxRetries'])
                 ->setAutoDeposit($fields['autoDeposit'])
                 ->setWindowName($this->get_window_name())
-	            ->setOrderReference($this->getOrderReference($order));
+                ->setOrderReference(md5($this->getOrderReference($order).microtime()));
 
             if (isset($_SESSION['qcpConsumerDeviceId'])) {
             	$client->consumerDeviceId = $_SESSION['qcpConsumerDeviceId'];
             	unset($_SESSION['qcpConsumerDeviceId']);
             }
 	        if ($fields['sendBasketData'] ||
-		        ($paymentType == QentaCEE\Qpay\PaymentType::INVOICE && $this->config->get('payment_'.$prefix.'_provider') != 'payolution') ||
-		        ($paymentType == QentaCEE\Qpay\PaymentType::INSTALLMENT && $this->config->get('payment_'.$prefix.'_provider') != 'payolution')
+		        ($paymentType == PaymentType::INVOICE && $this->config->get('payment_'.$prefix.'_provider') != 'payolution') ||
+		        ($paymentType == PaymentType::INSTALLMENT && $this->config->get('payment_'.$prefix.'_provider') != 'payolution')
 	        ) {
 		        $client->setBasket($this->setBasketData($order['currency_code'], $order['currency_value']));
 	        }
@@ -305,10 +310,10 @@ class ModelExtensionPaymentQenta extends Model
 	/**
 	 * Create basket items including shipping and fix taxes
 	 *
-	 * @return QentaCEE\Stdlib\Basket
+	 * @return QentaBasket
 	 */
 	public function setBasketData($currencyCode, $currencyValue) {
-		$basket        = new QentaCEE\Stdlib\Basket();
+		$basket        = new QentaBasket();
 		$basketContent = $this->cart;
 
 		$fix_tax = 0;
