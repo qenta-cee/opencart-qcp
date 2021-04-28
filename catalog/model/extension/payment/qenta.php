@@ -277,7 +277,7 @@ class ModelExtensionPaymentQenta extends Model
                 ->setMaxRetries($fields['maxRetries'])
                 ->setAutoDeposit($fields['autoDeposit'])
                 ->setWindowName($this->get_window_name())
-                ->setOrderReference(md5($this->getOrderReference($order).microtime()));
+                ->setOrderReference($this->getOrderReference($order));
 
             if (isset($_SESSION['qcpConsumerDeviceId'])) {
             	$client->consumerDeviceId = $_SESSION['qcpConsumerDeviceId'];
