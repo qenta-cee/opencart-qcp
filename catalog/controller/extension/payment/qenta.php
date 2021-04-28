@@ -37,6 +37,11 @@ ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . DIR_SYSTEM . 
 
 require_once 'vendor/autoload.php';
 
+use \QentaCEE\QPay\PaymentType;
+use \QentaCEE\QPay\FrontendClient as QentaFrontendClient;
+use \QentaCEE\QPay\Error as QentaError;
+use \QentaCEE\QPay\ReturnFactory as QentaReturnFactory;
+
 class ControllerExtensionPaymentQenta extends Controller
 {
     protected $data = array();
@@ -129,12 +134,12 @@ class ControllerExtensionPaymentQenta extends Controller
             $data['window_name'] = $_POST['qenta_checkout_page_window_name'];
         }
 
-        if (($this->payment_type == QentaCEE\Qpay\PaymentType::INSTALLMENT || $this->payment_type == QentaCEE\Qpay\PaymentType::INVOICE) && !isset($_POST['birthday'])) {
+        if (($this->payment_type == PaymentType::INSTALLMENT || $this->payment_type == PaymentType::INVOICE) && !isset($_POST['birthday'])) {
             $this->checkout();
         }
 
         $birthday = null;
-        if ($this->payment_type == QentaCEE\Qpay\PaymentType::INSTALLMENT || $this->payment_type == QentaCEE\Qpay\PaymentType::INVOICE) {
+        if ($this->payment_type == PaymentType::INSTALLMENT || $this->payment_type == PaymentType::INVOICE) {
             $birthday = date_create($_POST['birthday']);
             if (!$birthday) {
                 $this->checkout();
@@ -148,7 +153,7 @@ class ControllerExtensionPaymentQenta extends Controller
         }
 
 	    $financial_institution = NULL;
-	    if ($this->payment_type == QentaCEE\Qpay\PaymentType::IDL || $this->payment_type == QentaCEE\Qpay\PaymentType::EPS) {
+	    if ($this->payment_type == PaymentType::IDL || $this->payment_type == PaymentType::EPS) {
 		    if (isset($_POST['qcp_financialinstitution'])) {
 			    $financial_institution = $_POST['qcp_financialinstitution'];
 		    }
@@ -177,7 +182,7 @@ class ControllerExtensionPaymentQenta extends Controller
         // additional Data
         $data['button_confirm'] = $this->language->get('button_confirm');
         $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-        $pluginVersion = QentaCEE\QPay\FrontendClient::generatePluginVersion($order_info['store_name'], VERSION,
+        $pluginVersion = QentaFrontendClient::generatePluginVersion($order_info['store_name'], VERSION,
             'Opencart QENTA Checkout Page', $this->pluginVersion);
 
         // set fields, optional, comsumer, generate fingerprint, send request, redirect
@@ -187,7 +192,7 @@ class ControllerExtensionPaymentQenta extends Controller
 
 	    $template = 'qenta';
         // If connection to qenta success set template
-	    if($result instanceof QentaCEE\QPay\Error) {
+	    if($result instanceof QentaError) {
 		    $this->session->data['error'] = $result->getMessage();
 		    $this->checkout();
 	    }
@@ -242,7 +247,7 @@ class ControllerExtensionPaymentQenta extends Controller
         if (!isset($_REQUEST['opencartOrderId']) || !strlen($_REQUEST['opencartOrderId'])) {
             $message = 'order-id missing';
             $this->model_extension_payment_qenta->writeLog($message);
-            return QentaCEE\QPay\ReturnFactory::generateConfirmResponseString($message);
+            return QentaReturnFactory::generateConfirmResponseString($message);
         }
         $order_id = $_REQUEST['opencartOrderId'];
 
@@ -273,19 +278,19 @@ class ControllerExtensionPaymentQenta extends Controller
 
         $message = null;
         try {
-            $return = QentaCEE\QPay\ReturnFactory::getInstance($_POST, $this->config->get($prefix . '_secret'));
+            $return = QentaReturnFactory::getInstance($_POST, $this->config->get($prefix . '_secret'));
             if (!$return->validate()) {
                 $message = 'Validation error: invalid response';
                 $this->model_checkout_order->addOrderHistory($order_id, $failureStatus);
                 $this->model_checkout_order->writeLog($message);
-                return QentaCEE\QPay\ReturnFactory::generateConfirmResponseString($message);
+                return QentaReturnFactory::generateConfirmResponseString($message);
             }
 
             /**
              * @var $return QentaCEE\Stdlib\Return\ReturnAbstract
              */
             switch ($return->getPaymentState()) {
-                case QentaCEE\QPay\ReturnFactory::STATE_SUCCESS:
+                case QentaReturnFactory::STATE_SUCCESS:
                     // for pending requests, confirm is already done, the model does only one
                     // confirm,
                     // so do an update in this case
@@ -296,7 +301,7 @@ class ControllerExtensionPaymentQenta extends Controller
                         $this->model_checkout_order->addOrderHistory($order_id, $successStatus, $comment, true);
                     }
                     break;
-                case QentaCEE\QPay\ReturnFactory::STATE_PENDING:
+                case QentaReturnFactory::STATE_PENDING:
                     /**
                      * @var $return QentaCEE\QPay\Return\Pending
                      */
@@ -305,13 +310,13 @@ class ControllerExtensionPaymentQenta extends Controller
                 // we can do nothing here, confirm() always sends the notification email
                 // the update() method doese nothing if the order has not been confirmed yet
                 // see catalog/model/checkout/order.php
-                case QentaCEE\QPay\ReturnFactory::STATE_CANCEL:
+                case QentaReturnFactory::STATE_CANCEL:
                     /**
                      * @var $return QentaCEE\QPay\Return\Cancel
                      */
                     break;
 
-                case QentaCEE\QPay\ReturnFactory::STATE_FAILURE:
+                case QentaReturnFactory::STATE_FAILURE:
                     /**
                      * @var $return QentaCEE\QPay\Return\Failure
                      */
@@ -324,7 +329,7 @@ class ControllerExtensionPaymentQenta extends Controller
             $this->model_checkout_order->addOrderHistory($order_id, $failureStatus);
             $this->model_extension_payment_qenta->writeLog($e->getMessage());
         }
-        echo QentaCEE\QPay\ReturnFactory::generateConfirmResponseString($message);
+        echo QentaReturnFactory::generateConfirmResponseString($message);
     }
 
 	private function editOrder( $order_id, $data ) {

@@ -313,17 +313,14 @@ class ModelExtensionPaymentQenta extends Model
 
 		$fix_tax = 0;
 		foreach ($basketContent->getProducts() as $cart_item_key => $cart_item) {
-			$item         = new QentaCEE\Stdlib\Basket\Item($cart_item['product_id']);
-            $amount = [];
-            $amount['net'] = $this->convert($cart_item['price'], $currencyCode, $currencyValue);
-            $amount['gross'] = $this->tax->calculate($amount['net'], $cart_item['tax_class_id'], $this->config->get('config_tax'));
-            $amount['tax'] = $amount['gross'] - $amount['net'];
-            $amount['tax_rate'] = $this->convert($amount['tax'] / $cart_item['price'] * 100, $currencyCode, $currencyValue);
-
-			$item->setUnitGrossAmount($amount['gross'])
-				->setUnitNetAmount($amount['net'])
-				->setUnitTaxAmount($amount['tax'])
-				->setUnitTaxRate($amount['tax_rate'])
+			$item         = new QentaBasket\Item($cart_item['product_id']);
+            $gross_amount = $this->tax->calculate($this->convert($cart_item['price'], $currencyCode, $currencyValue), $cart_item['tax_class_id'], 'P');
+			$tax_amount   = $gross_amount - $this->convert($cart_item['price'], $currencyCode, $currencyValue);
+			$item->setUnitGrossAmount($gross_amount)
+				->setUnitNetAmount($this->convert($cart_item['price'], $currencyCode, $currencyValue))
+				->setUnitTaxAmount($tax_amount)
+				->setUnitTaxRate($this->convert($tax_amount / $cart_item['price'] * 100, $currencyCode, $currencyValue))
+				->setUnitTaxRate($this->convert($tax_amount / $cart_item['price'] * 100, $currencyCode, $currencyValue))
 				->setDescription(substr(utf8_decode($cart_item['name']), 0, 127))
 				->setName(substr(utf8_decode($cart_item['name']), 0, 127))
 				->setImageUrl($this->url->link($cart_item['image']));
@@ -336,28 +333,20 @@ class ModelExtensionPaymentQenta extends Model
 		if (isset($this->session->data['shipping_method'])) {
 			$session_data    = $this->session->data;
 			$shipping_method = $session_data['shipping_method'];
-
-            $shipping_amount = [];
-            $shipping_amount['gross'] = $this->tax->calculate($shipping_method['cost'], $shipping_method['tax_class_id'], $this->config->get('config_tax'));
-            $shipping_amount['net'] = $this->convert($shipping_method['cost'], $currencyCode, $currencyValue);
-            $shipping_amount['tax'] = $this->convert($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']), $currencyCode, $currencyValue);
-            $shipping_amount['tax_rate'] = $this->convert($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']) / $shipping_method['cost'] * 100, $currencyCode, $currencyValue);
-
-   
-			$item            = new QentaCEE\Stdlib\Basket\Item('shipping');
-			$item->setUnitGrossAmount($shipping_amount['gross'])
-				->setUnitNetAmount($shipping_amount['net'])
-				->setUnitTaxRate($shipping_amount['tax_rate'])
-				->setUnitTaxAmount($shipping_amount['tax'])
+			$item            = new QentaBasket\Item('shipping');
+			$item->setUnitGrossAmount($this->convertAndFormat($this->tax->calculate($shipping_method['cost'], $shipping_method['tax_class_id'], 'P'), $currencyCode, $currencyValue))
+				->setUnitNetAmount($this->convertAndFormat($shipping_method['cost'], $currencyCode, $currencyValue))
+				->setUnitTaxRate($this->convert($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']) / $shipping_method['cost'] * 100, $currencyCode, $currencyValue))
+				->setUnitTaxAmount($this->convertAndFormat($this->tax->getTax($shipping_method['cost'], $shipping_method['tax_class_id']), $currencyCode, $currencyValue))
 				->setName('Shipping')
 				->setDescription('Shipping');
 			$basket->addItem($item);
 			$fix_tax += $this->tax->calculate($shipping_method['cost'], $shipping_method['tax_class_id'], 'F') - $shipping_method['cost'];
 		}
-/*
+
 		// Add fix tax as basket item
 		if ($fix_tax > 0) {
-			$item = new QentaCEE\Stdlib\Basket\Item('FixTax');
+			$item = new QentaBasket\Item('FixTax');
 			$item->setUnitGrossAmount($this->convertAndFormat($fix_tax, $currencyCode, $currencyValue))
 				->setUnitNetAmount($this->convertAndFormat($fix_tax, $currencyCode, $currencyValue))
 				->setUnitTaxAmount($this->convertAndFormat(0, $currencyCode, $currencyValue))
@@ -366,7 +355,7 @@ class ModelExtensionPaymentQenta extends Model
 				->setName('FixTax');
 
 			$basket->addItem($item, 1);
-		}*/
+		}
 		return $basket;
 	}
 
@@ -416,7 +405,7 @@ class ModelExtensionPaymentQenta extends Model
     		return $this->config->get('payment_'.$prefix.'_customerStatement');
 	    }
         $customer_statement = sprintf('%9s', substr($order['store_name'], 0, 9));
-	    if ($payment_type != QentaCEE\Qpay\PaymentType::POLI) {
+	    if ($payment_type != PaymentType::POLI) {
 		    $customer_statement .= ' ' . $this->getOrderReference($order);
 	    }
 	    return $customer_statement;
