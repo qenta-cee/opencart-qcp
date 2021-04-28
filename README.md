@@ -1,10 +1,11 @@
 # QENTA Checkout Page plugin for OpenCart
 
-[![License](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://raw.githubusercontent.com/qenta-cee/opencart-wqcp/master/LICENSE)
+[![License](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://raw.githubusercontent.com/qenta-cee/opencart-qcp/master/LICENSE)
 [![OpenCart](https://img.shields.io/badge/OpenCart-v3.0.3.7-green.svg)](https://www.opencart.com/)
 [![PHP v7.2](https://img.shields.io/badge/php-v7.1-yellow.svg)](http://www.php.net)
 [![PHP v7.3](https://img.shields.io/badge/php-v7.1-yellow.svg)](http://www.php.net)
 [![PHP v7.4](https://img.shields.io/badge/php-v7.1-yellow.svg)](http://www.php.net)
+
 
 ----
 

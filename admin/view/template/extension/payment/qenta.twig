@@ -165,11 +165,11 @@ terms of use!
                                             id="select-{{ prefix ~ fieldName }}"
                                             name="{{ prefix ~ fieldName }}">
                                         <option value="payolution"
-                                                selected="{{ input[prefix ~ fieldName] == 'payolution' ? 'selected' }}">
+                                            {% if input[prefix ~ fieldName] == 'payolution' %}selected="selected"{% endif %}>
                                             {{ arrayLanguageText['payolution'] }}
                                         </option>
                                         <option value="ratepay"
-                                                selected="{{ input[prefix ~ fieldName] == 'ratepay' ? 'selected'}}">
+                                                {% if input[prefix ~ fieldName] == 'ratepay' %}selected="selected"{% endif %}>
                                             {{ arrayLanguageText['ratepay'] }}
                                         </option>
                                     </select>
