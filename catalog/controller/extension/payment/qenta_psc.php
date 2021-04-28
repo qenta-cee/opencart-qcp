@@ -36,9 +36,10 @@
 // Load main controller
 $dir = dirname(__FILE__);
 require_once($dir . '/qenta.php');
+use \QentaCEE\QPay\PaymentType;
 
 class ControllerExtensionPaymentQentaPsc extends ControllerExtensionPaymentQenta
 {
     public $payment_type_prefix = '_psc';
-    public $payment_type = QentaCEE\Qpay\PaymentType::PSC;
+    public $payment_type = PaymentType::PSC;
 }

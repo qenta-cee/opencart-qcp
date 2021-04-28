@@ -36,9 +36,10 @@
 // Load main controller
 $dir = dirname(__FILE__);
 require_once($dir . '/qenta.php');
+use \QentaCEE\QPay\PaymentType;
 
 class ControllerExtensionPaymentQentaCreditcardmoto extends ControllerExtensionPaymentQenta
 {
     public $payment_type_prefix = '_creditcardmoto';
-    public $payment_type = QentaCEE\Qpay\PaymentType::CCARD_MOTO;
+    public $payment_type = PaymentType::CCARD_MOTO;
 }

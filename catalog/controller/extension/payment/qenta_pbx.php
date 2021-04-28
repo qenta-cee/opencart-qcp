@@ -36,9 +36,10 @@
 // Load main controller
 $dir = dirname(__FILE__);
 require_once($dir . '/qenta.php');
+use \QentaCEE\QPay\PaymentType;
 
 class ControllerExtensionPaymentQentaPbx extends ControllerExtensionPaymentQenta
 {
     public $payment_type_prefix = '_pbx';
-    public $payment_type = QentaCEE\Qpay\PaymentType::PBX;
+    public $payment_type = PaymentType::PBX;
 }

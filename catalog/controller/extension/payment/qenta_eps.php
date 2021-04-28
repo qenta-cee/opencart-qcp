@@ -36,11 +36,12 @@
 // Load main controller
 $dir = dirname(__FILE__);
 require_once($dir . '/qenta.php');
+use \QentaCEE\QPay\PaymentType;
 
 class ControllerExtensionPaymentQentaEps extends ControllerExtensionPaymentQenta
 {
     public $payment_type_prefix = '_eps';
-    public $payment_type = QentaCEE\Qpay\PaymentType::EPS;
+    public $payment_type = PaymentType::EPS;
 
 	public function index() {
 		$prefix = 'qenta'.$this->payment_type_prefix;
@@ -59,7 +60,7 @@ class ControllerExtensionPaymentQentaEps extends ControllerExtensionPaymentQenta
 		$template                          = 'qenta_eps';
 		$data['text_title']                = $this->language->get('text_title');
 		$data['text_financialinstitution'] = $this->language->get('text_financialinstitution');
-		$data['select_financialinstitution'] = QentaCEE\Qpay\PaymentType::getFinancialInstitutions('EPS');
+		$data['select_financialinstitution'] = PaymentType::getFinancialInstitutions('EPS');
 
 		$data['error_init'] = $this->language->get('error_init');
 

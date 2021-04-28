@@ -36,9 +36,10 @@
 // Load main controller
 $dir = dirname(__FILE__);
 require_once($dir . '/qenta.php');
+use \QentaCEE\QPay\PaymentType;
 
 class ControllerExtensionPaymentQentaBmc extends ControllerExtensionPaymentQenta
 {
     public $payment_type_prefix = '_bmc';
-    public $payment_type = QentaCEE\Qpay\PaymentType::BMC;
+    public $payment_type = PaymentType::BMC;
 }

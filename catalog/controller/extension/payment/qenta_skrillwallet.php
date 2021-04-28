@@ -36,9 +36,10 @@
 // Load main controller
 $dir = dirname(__FILE__);
 require_once($dir . '/qenta.php');
+use \QentaCEE\QPay\PaymentType;
 
 class ControllerExtensionPaymentQentaSkrillWallet extends ControllerExtensionPaymentQenta
 {
     public $payment_type_prefix = '_skrillwallet';
-    public $payment_type = QentaCEE\Qpay\PaymentType::SKRILLWALLET;
+    public $payment_type = PaymentType::SKRILLWALLET;
 }

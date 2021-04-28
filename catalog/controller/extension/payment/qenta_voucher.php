@@ -36,9 +36,10 @@
 // Load main controller
 $dir = dirname(__FILE__);
 require_once($dir . '/qenta.php');
+use \QentaCEE\QPay\PaymentType;
 
 class ControllerExtensionPaymentQentaVoucher extends ControllerExtensionPaymentQenta
 {
     public $payment_type_prefix = '_voucher';
-    public $payment_type = QentaCEE\Qpay\PaymentType::VOUCHER;
+    public $payment_type = PaymentType::VOUCHER;
 }

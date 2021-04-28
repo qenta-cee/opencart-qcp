@@ -36,6 +36,7 @@
 // Load main controller
 $dir = dirname(__FILE__);
 require_once($dir . '/qenta.php');
+use \QentaCEE\QPay\PaymentType;
 
 class ControllerExtensionPaymentQentaMasterpass extends ControllerExtensionPaymentQenta
 {
@@ -44,5 +45,5 @@ class ControllerExtensionPaymentQentaMasterpass extends ControllerExtensionPayme
     // define payment type
     public $payment_type_prefix = '_masterpass';
 
-    public $payment_type = QentaCEE\Qpay\PaymentType::MASTERPASS;
+    public $payment_type = PaymentType::MASTERPASS;
 }
