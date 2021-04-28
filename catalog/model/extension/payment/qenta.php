@@ -249,8 +249,6 @@ class ModelExtensionPaymentQenta extends Model
                 $this->setConsumerInformation($order, $consumerData);
             }
 
-            $strCustomerLayout = $this->getCustomerLayout();
-
             $client
                 ->setAmount(
                     $this->currency->format($order['total'], $order['currency_code'], $order['currency_value'], false)
@@ -274,8 +272,7 @@ class ModelExtensionPaymentQenta extends Model
                 ->setMaxRetries($fields['maxRetries'])
                 ->setAutoDeposit($fields['autoDeposit'])
                 ->setWindowName($this->get_window_name())
-	            ->setOrderReference($this->getOrderReference($order))
-                ->setLayout($strCustomerLayout);
+	            ->setOrderReference($this->getOrderReference($order));
 
             if (isset($_SESSION['qcpConsumerDeviceId'])) {
             	$client->consumerDeviceId = $_SESSION['qcpConsumerDeviceId'];
@@ -433,24 +430,6 @@ class ModelExtensionPaymentQenta extends Model
     protected function getOrderReference($order)
     {
     	return sprintf('%010s', substr($order['order_id'], -10));
-    }
-    /**
-     * @return string
-     */
-    protected function getCustomerLayout()
-    {
-        $objMobileDetect = new QentaCEE\QPay\MobileDetect();
-        $layout = "desktop";
-
-        if ($objMobileDetect->isMobile($_SERVER['HTTP_USER_AGENT']) === true) {
-            $layout = "smartphone";
-        }
-
-        if ($objMobileDetect->isTablet($_SERVER['HTTP_USER_AGENT']) === true) {
-            $layout = "tablet";
-        }
-
-        return $layout;
     }
 
     /**
