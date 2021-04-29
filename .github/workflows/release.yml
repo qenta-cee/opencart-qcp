@@ -24,7 +24,7 @@ jobs:
           cd dist
           cp ../install.xml .
           cp -r ../admin ../catalog ../system upload/
-          zip -9r -x '*.git*' qcp.ocmod.zip .
+          zip -9r qcp.ocmod.zip . -x '*.git*'
       - name: Get the tag name
         id: get_tag
         run: echo ::set-output name=TAG::${GITHUB_REF/refs\/tags\//}
