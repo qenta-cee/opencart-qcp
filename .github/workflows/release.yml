@@ -13,7 +13,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Composer Install
-        run: composer install
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+        run: composer install --no-dev
       - name: Pack Release ZIP
         run: |
           mkdir -p dist/upload
