@@ -1,0 +1,272 @@
+{#
+Shop System Plugins - Terms of Use
+
+The plugins offered are provided free of charge by QENTA Payment CEE GmbH
+(abbreviated to QENTA) and are explicitly not part of the QENTA range of
+products and services.
+
+They have been tested and approved for full functionality in the standard
+configuration
+(status on delivery) of the corresponding shop system. They are under
+General Public License Version 2 (GPLv2) and can be used, developed and
+passed on to third parties under the same terms.
+
+However, QENTA does not provide any guarantee or accept any liability
+for any errors occurring when used in an enhanced, customized shop system
+configuration.
+
+Operation in an enhanced, customized configuration is at your own risk and
+requires a comprehensive test phase by the user of the plugin.
+
+Customers use the plugins at their own risk. QENTA does not guarantee
+their full functionality neither does QENTA assume liability for any
+disadvantages related to the use of the plugins. Additionally, QENTA
+does not guarantee the full functionality for customized shop systems or
+installed plugins of other vendors of plugins within the same shop system.
+
+Customers are responsible for testing the plugin's functionality before
+starting productive operation.
+
+By installing the plugin into the shop system the customer agrees to these
+terms of use. Please do not use the plugin if you do not agree to these
+terms of use!
+#}
+
+{{ header }}{{ column_left }}
+<div id="content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <div class="pull-right">
+                <button type="submit" form="form-qenta" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary">
+                    <i class="fa fa-save"></i>
+                </button>
+                <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default">
+                    <i class="fa fa-reply"></i>
+                </a>
+            </div>
+            <h1>{{ arrayLanguageText.heading_title }}</h1>
+            <ul class="breadcrumb">
+                {% for breadcrumb in breadcrumbs %}
+                    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="container-fluid">
+        {% if error_warning %}
+            <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {% for fieldname, isError in arrayInputFieldsMandatory %}
+                    {% if isError %}
+                        <i class="fa fa-exclamation-circle"></i><span class="error">%nbsp; {{ arrayErrorText.fieldname }}</span><br>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <i class="fa fa-pencil"></i>{{ arrayLanguageText.text_edit }}&nbsp;{{ arrayLanguageText.heading_title }}
+                </h3>
+            </div>
+            <div class="panel-body">
+                <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-qenta" class="form-horizontal">
+                    {# Enable #}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-enabled">
+                            <span title=""
+                                  data-toggle="tooltip"
+                                  data-original-title="{{ arrayLanguageText.enable_descript }}">
+                                {{ arrayLanguageText.enable_title }}
+                            </span>
+                        </label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="input-enabled" name="{{ status }}">
+                                {% if input[prefix ~ 'status'] %}
+                                    <option value="1" selected="selected">{{ arrayLanguageText.text_enabled }}</option>
+                                    <option value="0">{{ arrayLanguageText.text_disabled }}</option>
+                                {% else %}
+                                    <option value="1" >{{ arrayLanguageText.text_enabled }}</option>
+                                    <option value="0" selected="selected">{{ arrayLanguageText.text_disabled }}</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    {# Fields #}
+                    {% for fieldName, fieldType in inputfields %}
+                        {% if fieldType == 'input' %}
+                            <div class="form-group {{ fieldName in arrayInputFieldsMandatory|keys ? 'required' }}">
+                                <label class="col-sm-2 control-label" for="input-{{ prefix ~ fieldName }}">
+                                    <span title=""
+                                          data-toggle="tooltip"
+                                          data-original-title="{{ arrayLanguageText[fieldName ~ '_descript'] }}">
+                                        {{ arrayLanguageText[fieldName ~ '_title'] }}
+                                    </span>
+                                </label>
+                                <div class="col-sm-10">
+                                    <input class="form-control"
+                                           id="{{ 'input-' ~ prefix ~ fieldName }}"
+                                           type="text" name="{{ prefix ~ fieldName }}"
+                                           value="{{ input[prefix ~ fieldName] }}">
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if fieldType == 'textarea' %}
+                            <div class="form-group {{ fieldName in arrayInputFieldsMandatory|keys ? 'required' }}">
+                                <label class="col-sm-2 control-label" for="textarea-{{ prefix ~ fieldName }}">
+                                    <span title=""
+                                          data-toggle="tooltip"
+                                          data-original-title="{{ arrayLanguageText[fieldName ~ '_descript'] }}">
+                                        {{ arrayLanguageText[fieldName ~ '_title'] }}
+                                    </span>
+                                </label>
+                                <div class="col-sm-10">
+                                    <textarea class="form-control"
+                                              id="textarea- {{ prefix ~ fieldName }}"
+                                              name="{{ prefix ~ fieldName }}"
+                                    >{{ input[prefix ~ fieldName] }}</textarea>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if fieldType == 'true_false' %}
+                            <div class="form-group {{ fieldName in arrayInputFieldsMandatory|keys ? 'required' }}">
+                                <label class="col-sm-2 control-label" for="select-{{ prefix ~ fieldName }}">
+                                    <span title=""
+                                          data-toggle="tooltip"
+                                          data-original-title="{{ arrayLanguageText[fieldName ~ '_descript'] }}">
+                                        {{ arrayLanguageText[fieldName ~ '_title'] }}
+                                    </span>
+                                </label>
+                                <div class="col-sm-10">
+                                    <select class="form-control"
+                                            id="select-{{ prefix ~ fieldName }}"
+                                            name="{{ prefix ~ fieldName }}">
+                                        <option value="0">{{ arrayLanguageText['no'] }}</option>
+                                        {% if input[prefix ~ fieldName] == '1' %}
+                                            <option value="1" selected="selected">{{ arrayLanguageText['yes'] }}</option>
+                                        {% else %}
+                                            <option value="1">{{ arrayLanguageText['yes'] }}</option>
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if fieldType == 'select_provider' %}
+                            <div class="form-group {{ fieldName in arrayInputFieldsMandatory|keys ? 'required' }}">
+                                <label class="col-sm-2 control-label" for="select-{{ prefix ~ fieldName }}">
+                                    <span title=""
+                                          data-toggle="tooltip"
+                                          data-original-title="{{ arrayLanguageText[fieldName ~ '_descript'] }}">
+                                        {{ arrayLanguageText[fieldName ~ '_title'] }}
+                                    </span>
+                                </label>
+                                <div class="col-sm-10">
+                                    <select class="form-control"
+                                            id="select-{{ prefix ~ fieldName }}"
+                                            name="{{ prefix ~ fieldName }}">
+                                        <option value="payolution"
+                                            {% if input[prefix ~ fieldName] == 'payolution' %}selected="selected"{% endif %}>
+                                            {{ arrayLanguageText['payolution'] }}
+                                        </option>
+                                        <option value="ratepay"
+                                                {% if input[prefix ~ fieldName] == 'ratepay' %}selected="selected"{% endif %}>
+                                            {{ arrayLanguageText['ratepay'] }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if fieldType == 'select_country' %}
+                            <div class="form-group {{ fieldName in arrayInputFieldsMandatory|keys ? 'required' }}">
+                                <label class="col-sm-2 control-label" for="select-{{ prefix ~ fieldName }}">
+                                    <span title=""
+                                          data-toggle="tooltip"
+                                          data-original-title="{{ arrayLanguageText[fieldName ~ '_descript'] }}">
+                                        {{ arrayLanguageText[fieldName ~ '_title'] }}
+                                    </span>
+                                </label>
+                                <div class="col-sm-10">
+                                    <select multiple class="form-control"
+                                            id="select-{{ prefix ~ fieldName }}"
+                                            name="{{ prefix ~ fieldName }}[]">
+                                        {% for country in countries %}
+                                            <option value="{{ country['country_id'] }}"
+                                                    selected="{{ input[prefix ~ fieldName] and (input[prefix ~ fieldName] in country['country_id']) ? 'selected' }}">
+                                                {{ country['name'] }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if fieldType == 'select_currency' %}
+                            <div class="form-group {{ fieldName in arrayInputFieldsMandatory|keys ? 'required' }}">
+                                <label class="col-sm-2 control-label" for="select-{{ prefix ~ fieldName }}">
+                                    <span title=""
+                                          data-toggle="tooltip"
+                                          data-original-title="{{ arrayLanguageText[fieldName ~ '_descript'] }}">
+                                        {{ arrayLanguageText[fieldName ~ '_title'] }}
+                                    </span>
+                                </label>
+                                <div class="col-sm-10">
+                                    <select multiple class="form-control"
+                                            id="select-{{ prefix ~ fieldName }}"
+                                            name="{{ prefix ~ fieldName }}[]">
+                                        {% for currency in currencies %}
+                                            <option value="{{ currency['code'] }}"
+                                                    selected="{{ input[prefix ~ fieldName] and
+                                                    (input[prefix ~ fieldName] in currency['code']) ? 'selected' }}">
+                                                {{ currency['code'] }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if fieldType == 'status_code' %}
+                            <div class="form-group {{ fieldName in arrayInputFieldsMandatory|keys ? 'required' }}">
+                                <label class="col-sm-2 control-label" for="select-{{ prefix ~ fieldName }}">
+                                    <span title=""
+                                          data-toggle="tooltip"
+                                          data-original-title="{{ arrayLanguageText[fieldName ~ '_descript'] }}">
+                                        {{ arrayLanguageText[fieldName ~ '_title'] }}
+                                    </span>
+                                </label>
+                                <div class="col-sm-10">
+                                    <select class="form-control"
+                                            id="select-{{ prefix ~ fieldName }}"
+                                            name="{{ prefix ~ fieldName }}">
+                                        {% for order_status in order_statuses %}
+                                            {% if order_status['order_status_id'] == input[prefix ~ fieldName] %}
+                                                <option value="{{ order_status['order_status_id'] }}"
+                                                        selected="selected">
+                                                    {{ order_status['name'] }}
+                                                </option>
+                                            {% elseif order_status['order_status_id'] == '7' and
+                                                      input[prefix ~ fieldName] == '' %}
+                                                <option value="{{ order_status['order_status_id'] }}"
+                                                        selected="selected">
+                                                    {{ order_status['name'] }}
+                                                </option>
+                                            {% else %}
+                                                <option value="{{ order_status['order_status_id'] }}">
+                                                    {{ order_status['name'] }}
+                                                </option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </form>
+                {# License Text #}
+                <div class="col-sm-12 divider">
+                    <hr>
+                    {{ arrayLanguageText['license_text'] }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ footer }}

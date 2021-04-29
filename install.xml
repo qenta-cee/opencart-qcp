@@ -1,0 +1,27 @@
+<modification>
+    <name>QPAY Checkout Page</name>
+    <version>3.0.0</version>
+    <author>QENTA Payment CEE</author>
+    <code>QPAY</code>
+    <file path="admin/controller/common/column_left.php">
+        <operation>
+            <search><![CDATA[$design = array();]]></search>
+            <add position="before"><![CDATA[
+                $data['menus'][] = array(
+					'id'       => 'menu-qenta',
+					'icon'	   => 'fa-money',
+					'name'	   => $this->language->get('heading_title'),
+					'href'     => $this->url->link('extension/module/qenta', 'user_token=' . $this->session->data['user_token'], 'SSL'),
+					'children' => array()
+				);
+                ]]></add>
+        </operation>
+
+        <operation>
+            <search><![CDATA[$this->load->language('common/column_left');]]></search>
+            <add position="before"><![CDATA[
+                $this->load->language('extension/payment/text_qenta');
+            ]]></add>
+        </operation>
+    </file>
+</modification>
